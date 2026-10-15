@@ -1,96 +1,770 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#07121b">
-  <title>Qué pasó y por qué | Analítica descriptiva y diagnóstica</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
-    :root{--bg:#07121b;--panel:#0d1e29;--ink:#edf6f5;--muted:#9bb1b8;--mint:#7cf4c8;--blue:#67baff;--orange:#ffb86b;--line:#25404a;--pink:#ff7797;--mono:'DM Mono',monospace;--sans:'Manrope',system-ui,sans-serif}
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--sans)}
-    body:before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 78% 16%,#15364255,transparent 38%),radial-gradient(ellipse at 10% 88%,#0e3a3a44,transparent 35%);pointer-events:none}
-    #particles{position:fixed;inset:0;width:100%;height:100%;opacity:.65;pointer-events:none}
-    .deck{position:relative;width:100%;height:100%;display:grid;place-items:center;padding:clamp(18px,4vh,40px) clamp(18px,5vw,68px) 78px}
-    .slide{display:none;width:min(1180px,100%);height:min(680px,calc(100dvh - 126px));min-height:0;position:relative;animation:enter .55s cubic-bezier(.2,.7,.2,1) both}
-    .slide.active{display:flex;flex-direction:column}.slide:after{content:"";position:absolute;right:-40px;top:0;width:1px;height:100%;background:linear-gradient(transparent,var(--line),transparent);opacity:.5}
-    @keyframes enter{from{opacity:0;transform:translateY(15px) scale(.99)}to{opacity:1;transform:none}}
-    .eyebrow{font:500 clamp(10px,.85vw,12px) var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:10px;margin-bottom:clamp(12px,2vh,22px)}.eyebrow:before{content:"";width:26px;height:1px;background:var(--mint)}
-    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(54px,7vw,100px);letter-spacing:-.075em;line-height:.97;max-width:900px;margin-bottom:25px}h2{font-size:clamp(39px,5vw,66px);letter-spacing:-.065em;line-height:1.02;margin-bottom:18px}h3{font-size:20px;letter-spacing:-.035em;margin-bottom:10px}p{color:var(--muted);font-size:17px;line-height:1.65;max-width:720px}.lead{font-size:21px;max-width:710px}.mint{color:var(--mint)}.blue{color:var(--blue)}.orange{color:var(--orange)}
-    .cover{justify-content:center}.cover h1 span{display:block;color:var(--mint)}.cover-meta{display:flex;align-items:center;gap:14px;margin-top:38px;color:var(--muted);font-size:13px}.cover-meta strong{color:var(--ink);font-weight:600}.dot{width:4px;height:4px;background:var(--mint);border-radius:50%}.orb{position:absolute;right:5%;top:13%;width:min(35vw,390px);aspect-ratio:1;border:1px solid #7cf4c855;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 90px #37e6b615,inset 0 0 75px #37e6b60c}.orb:before,.orb:after{content:"";position:absolute;border:1px solid #67baff44;border-radius:50%;inset:12%;transform:rotate(-35deg) scaleX(1.35)}.orb:after{inset:27%;transform:rotate(62deg) scaleX(1.6);border-color:#ffb86b55}.orb-core{font:500 13px var(--mono);color:var(--mint);text-align:center;z-index:1}.orb-core b{display:block;font:800 66px var(--sans);letter-spacing:-.08em;color:var(--ink)}
-    .two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,4vw,48px);align-items:center;flex:1;min-height:0}.card{background:linear-gradient(145deg,#102631dd,#0a1821dd);border:1px solid var(--line);border-radius:18px;padding:clamp(15px,2vw,24px);box-shadow:0 18px 55px #0002;min-width:0;max-width:100%}.stat{font-size:clamp(38px,4vw,55px);letter-spacing:-.07em;color:var(--mint);font-weight:800}.stat-label{font:11px var(--mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}.data-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.data-chip{border-left:2px solid var(--mint);padding:5px 0 5px 13px;color:var(--muted);font-size:13px}.data-chip b{display:block;color:var(--ink);font-size:18px;margin-bottom:3px}
-    .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(10px,1.5vw,16px);margin-top:clamp(12px,2vh,22px);align-items:stretch}.metric-card{padding:clamp(14px,2vw,22px);border-radius:15px;border:1px solid var(--line);background:#0d1e29cc;min-height:clamp(150px,22vh,190px);min-width:0}.metric-card .tag{font:11px var(--mono);color:var(--mint)}.metric-card h3{font-size:clamp(16px,1.5vw,20px);margin:14px 0 8px}.metric-card p{font-size:clamp(12px,1.1vw,14px);margin:0}
-    .chart-card{height:390px;position:relative;overflow:hidden}.chart-title{font:11px var(--mono);color:var(--muted);letter-spacing:.1em;text-transform:uppercase}.chart{width:100%;height:300px;margin-top:12px}.gridline{stroke:#23404a;stroke-width:1;stroke-dasharray:3 6}.axis{fill:#89a5ad;font:11px var(--mono)}.line{fill:none;stroke:var(--mint);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.line2{fill:none;stroke:var(--blue);stroke-width:2;stroke-dasharray:6 5}.area{fill:url(#area)}.alert{fill:var(--orange);stroke:#07121b;stroke-width:3}.legend{display:flex;gap:16px;font:11px var(--mono);color:var(--muted);margin-top:4px}.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--mint)}.legend .l2{background:var(--blue)}
-    .bars{display:flex;align-items:end;height:185px;gap:11px;padding:18px 10px 0;border-bottom:1px solid var(--line);margin:15px 0}.bar{flex:1;min-width:15px;border-radius:6px 6px 0 0;background:linear-gradient(0deg,#338ca7,var(--mint));position:relative;animation:grow .9s ease-out both;transform-origin:bottom}.bar:nth-child(3n){background:linear-gradient(0deg,#3475a5,var(--blue))}@keyframes grow{from{transform:scaleY(.05)}to{transform:scaleY(1)}}.bar-label{font:10px var(--mono);color:var(--muted);text-align:center;margin-top:8px}.bar-group{height:100%;flex:1;display:flex;flex-direction:column;align-items:stretch}.whisker{height:180px;display:flex;align-items:center;justify-content:space-evenly;gap:12px}.boxplot{position:relative;width:52px;height:100%;display:flex;justify-content:center;align-items:center}.boxplot:before{content:"";position:absolute;top:10%;bottom:10%;width:2px;background:var(--blue)}.boxplot span{position:relative;width:46px;height:42%;background:#67baff55;border:1px solid var(--blue);border-radius:5px}.boxplot span:after{content:"";position:absolute;top:50%;left:0;width:100%;height:2px;background:var(--mint)}.boxlabels{display:flex;justify-content:space-around;color:var(--muted);font:10px var(--mono);margin-top:8px}.tiny-hist{height:40px;display:flex;align-items:end;gap:4px;margin-top:9px;border-bottom:1px solid var(--line)}.tiny-hist i{flex:1;background:linear-gradient(0deg,#258a83,var(--mint));border-radius:3px 3px 0 0}.tiny-boxes{height:42px;display:flex;align-items:center;justify-content:space-around;margin-top:8px}.tiny-boxes i{height:22px;width:34px;border:1px solid var(--blue);background:#67baff55;border-radius:3px;position:relative}.tiny-boxes i:before{content:"";position:absolute;left:50%;top:-9px;bottom:-9px;width:1px;background:var(--blue)}.tiny-boxes i:after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--mint)}.tiny-heat{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:10px}.tiny-heat i{height:9px;border-radius:2px;background:#14504d}.tiny-heat i:nth-child(4n){background:#2a9f87}.tiny-heat i:nth-child(9n){background:var(--orange)}
-    .heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:22px 0 10px}.heat{height:42px;border-radius:6px;background:#13504e}.heat:nth-child(7n+1),.heat:nth-child(7n+2){background:#153644}.heat:nth-child(5n){background:#23867c}.heat:nth-child(4n){background:#38b89c}.heat:nth-child(11n){background:#e3a55a}.heat-labels{display:grid;grid-template-columns:repeat(7,1fr);font:10px var(--mono);color:var(--muted);text-align:center}
-    .reference{display:grid;grid-template-columns:.95fr 1.05fr;gap:36px;align-items:center;flex:1}.ref-number{font:12px var(--mono);color:var(--mint);letter-spacing:.12em}.source-note{font:11px var(--mono);line-height:1.7;color:var(--muted);border-top:1px solid var(--line);padding-top:13px;margin-top:18px}.mini-matrix{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;transform:perspective(600px) rotateY(-8deg)}.cell{aspect-ratio:1;border-radius:3px;background:#145d68}.cell:nth-child(5n){background:#20a28e}.cell:nth-child(7n){background:#71dfb3}.cell:nth-child(3n+1){opacity:.35}.cell:nth-child(13n){background:var(--orange)}.matrix-caption{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--muted);margin-top:12px}.stacked{height:260px;display:flex;align-items:end;gap:20px;border-bottom:1px solid var(--line);padding:0 16px}.stack{width:17%;display:flex;flex-direction:column-reverse;border-radius:7px 7px 0 0;overflow:hidden}.stack i{display:block;height:var(--h);background:#4296b4}.stack i:nth-child(2){background:#6db9d2}.stack i:nth-child(3){background:#b4e6d4}.stack i:nth-child(4){background:#27806f}.stack-labels{display:flex;justify-content:space-around;margin-top:8px;font:10px var(--mono);color:var(--muted)}
-    .diagnostic{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px;align-items:stretch}.step{border:1px solid var(--line);background:#0d1e29c9;border-radius:13px;padding:17px;position:relative}.step:not(:last-child):after{content:"→";position:absolute;right:-13px;top:45%;color:var(--mint);z-index:2}.step b{font:12px var(--mono);color:var(--mint)}.step h3{font-size:15px;margin:12px 0 7px}.step p{font-size:12px;line-height:1.5;margin:0}.tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:25px}.pill{border:1px solid #2c5d5c;border-radius:99px;padding:8px 12px;color:var(--mint);font:11px var(--mono)}
-    .compare{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:26px}.compare .card{min-height:190px}.compare .card:first-child{border-color:#27636a}.compare .card:last-child{border-color:#715435}.compare p{font-size:14px}.equation{font:13px var(--mono);color:var(--mint);background:#061017;padding:13px;border-radius:8px;margin-top:14px;display:inline-block}.close{justify-content:center}.close blockquote{font-size:clamp(25px,3vw,38px);line-height:1.4;letter-spacing:-.04em;margin:15px 0 35px;max-width:900px}.team{display:flex;gap:8px;flex-wrap:wrap}.team span{font-size:12px;padding:9px 13px;border:1px solid var(--line);border-radius:99px;color:var(--muted)}
-    .controls{position:fixed;left:0;right:0;bottom:0;height:58px;display:flex;align-items:center;justify-content:center;gap:16px;background:linear-gradient(transparent,#07121beF 36%);z-index:5}.controls button{width:34px;height:34px;border:1px solid var(--line);background:#0b1d27;color:var(--ink);border-radius:50%;font-size:17px;cursor:pointer;transition:.2s}.controls button:hover{color:var(--mint);border-color:var(--mint);transform:translateY(-2px)}#counter{font:11px var(--mono);color:var(--muted);min-width:55px;text-align:center}.progress{position:fixed;left:0;bottom:0;height:2px;background:var(--mint);transition:width .35s;z-index:7}.hint{position:fixed;right:26px;bottom:22px;color:#668088;font:10px var(--mono);z-index:6}.note{position:absolute;bottom:6px;left:0;font:10px var(--mono);color:#718e96}
-    .mini-matrix{height:clamp(170px,27vh,235px);grid-template-rows:repeat(8,minmax(0,1fr))}.cell{min-height:0;aspect-ratio:auto}.matrix-caption{margin-top:7px}.stacked{height:clamp(112px,16vh,155px);gap:clamp(9px,1.5vw,16px);padding-inline:12px}.stack-labels{margin-top:6px}
-    @media(max-width:760px){.deck{padding:20px 20px 72px}.slide{height:calc(100dvh - 96px);max-height:none;overflow:auto;padding:10px 0 22px;overscroll-behavior:contain}.slide:after{display:none}.orb{opacity:.22;right:-15%;top:16%;width:65vw}.two-col,.reference{grid-template-columns:minmax(0,1fr);gap:18px;flex:none}.card{width:100%}.chart-card{height:clamp(260px,42vh,340px)}.chart{height:clamp(180px,30vh,240px)}.metric-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}.metric-card{min-height:0}.diagnostic{grid-template-columns:repeat(2,minmax(0,1fr))}.step:not(:last-child):after{display:none}.compare{grid-template-columns:minmax(0,1fr)}.whisker{height:120px}.hint{display:none}.data-list{gap:8px}.stat{font-size:42px}.reference>.card{min-height:280px}.mini-matrix{height:clamp(155px,24vh,215px)}.stacked{height:clamp(105px,15vh,145px)}}
-    @media(max-width:420px){h1{font-size:clamp(46px,14vw,62px)}h2{font-size:clamp(34px,10vw,46px)}p{font-size:15px}.diagnostic{grid-template-columns:minmax(0,1fr)}.cover-meta{gap:8px;flex-wrap:wrap;max-width:88%}.data-list{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.data-chip{font-size:11px}.data-chip b{font-size:16px}.controls{height:54px}.metric-card{padding:16px}}
-    @media(max-height:620px) and (min-width:761px){.deck{padding-top:14px;padding-bottom:60px}.slide{height:calc(100dvh - 90px);overflow:auto;padding:6px 0 18px}.eyebrow{margin-bottom:10px}h2{font-size:clamp(34px,4vw,50px)}p{font-size:15px}.metric-card{min-height:140px;padding:14px}.chart-card{height:300px}.chart{height:215px}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07121b">
+<title>Qué pasó y por qué | Analítica descriptiva y diagnóstica</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#07121b;--panel:#0d1e29;--ink:#edf6f5;--muted:#9bb1b8;--dim:#6d8a93;--mint:#7cf4c8;--blue:#67baff;--orange:#ffb86b;--pink:#ff7797;--line:#25404a;--ok:#4fd18b;--warn:#f7c04a;--bad:#ff6b6b;--mono:'DM Mono',ui-monospace,monospace;--sans:'Manrope',system-ui,sans-serif;--k:1}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 78% 16%,#15364255,transparent 38%),radial-gradient(ellipse at 10% 88%,#0e3a3a44,transparent 35%);pointer-events:none}
+#particles{position:fixed;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+#stage{position:absolute;left:50%;top:calc(50% - 27px);width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--k))}
+.slide{position:absolute;inset:0;padding:38px 56px 30px;display:none;flex-direction:column}
+.slide.active{display:flex}
+.slide.active>*:not([data-s]){animation:up .6s cubic-bezier(.2,.7,.2,1) both}
+.slide.active>*:nth-child(2){animation-delay:.06s}.slide.active>*:nth-child(3){animation-delay:.12s}.slide.active>*:nth-child(4){animation-delay:.18s}.slide.active>*:nth-child(5){animation-delay:.24s}.slide.active>*:nth-child(n+6){animation-delay:.3s}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+/* pasos: aparecen con → */
+[data-s]{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+[data-s].fx-l{transform:translateX(-22px)}[data-s].fx-z{transform:scale(.94)}[data-s].fx-0{transform:none}
+[data-s].on{opacity:1;transform:none}
+/* animaciones de gráficos (se activan con .go) */
+.draw{stroke-dasharray:1 1;stroke-dashoffset:1;transition:stroke-dashoffset 2s cubic-bezier(.45,0,.2,1)}.draw.go{stroke-dashoffset:0}
+.grow>*{transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;transition:transform .75s cubic-bezier(.2,.8,.2,1) calc(var(--i,0)*35ms)}
+.growx>*{transform:scaleX(0);transform-box:fill-box;transform-origin:0 50%;transition:transform .8s cubic-bezier(.2,.8,.2,1) calc(var(--i,0)*60ms)}
+.pop>*{opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center;transition:opacity .45s ease calc(var(--i,0)*14ms),transform .45s cubic-bezier(.2,.9,.3,1.3) calc(var(--i,0)*14ms)}
+.grow.go>*,.growx.go>*,.pop.go>*{transform:none;opacity:1}
+/* tipografía */
+.eyebrow{font:500 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:10px;margin-bottom:12px}.eyebrow:before{content:"";width:26px;height:1px;background:var(--mint)}
+h1,h2,h3,p{margin:0}
+h1{font-size:100px;letter-spacing:-.075em;line-height:.95;margin-bottom:22px}h1 span{display:block;color:var(--mint)}
+h2{font-size:46px;letter-spacing:-.055em;line-height:1.04;margin-bottom:18px;max-width:1000px}h2 span{color:var(--mint)}
+h3{font-size:19px;letter-spacing:-.03em;margin-bottom:6px}
+p{color:var(--muted);font-size:16px;line-height:1.6}.lead{font-size:20px;line-height:1.55;max-width:620px}
+.mint{color:var(--mint)}.blue{color:var(--blue)}.orange{color:var(--orange)}.pink{color:var(--pink)}b,strong{color:var(--ink)}
+.mono{font-family:var(--mono)}.small{font-size:13px;line-height:1.5}
+.note{position:absolute;left:56px;bottom:12px;font:10.5px var(--mono);color:#6b8890;max-width:1000px}
+.who{position:absolute;top:36px;right:56px;font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;padding:7px 12px;border:1px solid var(--line);border-radius:99px;background:#0b1a23cc}
+.who i{display:flex;gap:3px}.who i u{width:14px;height:3px;border-radius:2px;background:#24414b}.who i u.on{background:var(--mint)}
+/* bloques */
+.card{background:linear-gradient(145deg,#102631e8,#0a1821e8);border:1px solid var(--line);border-radius:16px;padding:16px 18px;min-width:0}
+.card h3{font-size:17px}.card p{font-size:14px;line-height:1.5}
+.tag{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mint)}
+.ctitle{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;gap:10px}
+.row{display:flex;gap:16px}.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;min-height:0}
+.kpi{border-left:2px solid var(--mint);padding:4px 0 4px 12px}.kpi b{display:block;font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.05;color:var(--mint)}.kpi span{font:11px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.kpi.o{border-color:var(--orange)}.kpi.o b{color:var(--orange)}.kpi.b{border-color:var(--blue)}.kpi.b b{color:var(--blue)}.kpi.p{border-color:var(--pink)}.kpi.p b{color:var(--pink)}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #2c5d5c;border-radius:99px;padding:6px 12px;color:var(--mint);font:11.5px var(--mono)}
+.pill.o{border-color:#6d5233;color:var(--orange)}.pill.b{border-color:#2d5578;color:var(--blue)}
+.next{margin-top:auto;align-self:flex-start;font:12px var(--mono);color:var(--muted);border:1px dashed #36606a;border-radius:10px;padding:9px 14px}.next b{color:var(--mint)}
+.lesson{border:1px solid #2c5d5c;background:#0c2a2acc;border-radius:12px;padding:12px 16px;font-size:15px;line-height:1.5;color:var(--ink)}.lesson b{color:var(--mint)}
+.lesson.o{border-color:#6d5233;background:#2a1f12cc}.lesson.o b{color:var(--orange)}
+/* figuras e imágenes */
+.fig{margin:0;position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0a1821}
+.fig img{display:block;width:100%;height:100%;object-fit:cover}
+.fig.paper{background:#fff;display:flex;flex-direction:column}.fig.paper img{object-fit:contain;flex:1;min-height:0;height:auto}
+.fig figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 10px;font:11px var(--mono);line-height:1.5;color:#d5e4e6;background:linear-gradient(transparent,#07121bf0 45%)}
+.fig.paper figcaption{position:static;background:#0a1821;color:var(--muted);padding:8px 12px}
+.cred{display:block;font-size:9.5px;color:#7d979e;margin-top:3px}
+.fig.noimg img{display:none}.fig.noimg:before{content:"Imagen en línea (requiere conexión a internet)";position:absolute;inset:0;display:grid;place-items:center;font:12px var(--mono);color:var(--dim);background:repeating-linear-gradient(45deg,#0d1e29,#0d1e29 10px,#0b1922 10px,#0b1922 20px)}
+/* svg */
+svg.ch{display:block;width:100%;height:auto;overflow:visible}
+.gl{stroke:#21404a;stroke-dasharray:3 5}.ax{fill:#89a5ad;font:11px var(--mono)}.axs{fill:#89a5ad;font:600 12px var(--sans)}
+.lbl{fill:var(--ink);font:700 13px var(--sans)}.lblm{fill:var(--muted);font:11px var(--mono)}.big{font:800 22px var(--sans);letter-spacing:-.03em}
+[data-tip]{cursor:default}
+rect[data-tip]:hover,circle[data-tip]:hover{filter:brightness(1.25)}
+#tip{position:fixed;z-index:30;pointer-events:none;opacity:0;transition:opacity .15s;background:#061017f2;border:1px solid #2d5560;border-radius:9px;padding:8px 11px;font:12px var(--mono);color:var(--muted);max-width:280px;line-height:1.45;box-shadow:0 10px 30px #0008}#tip b{color:var(--ink)}
+/* portada */
+.cover{display:none;grid-template-columns:1.08fr .92fr;gap:40px;align-items:center}.cover.active{display:grid}
+.cov-stats{display:grid;grid-template-columns:repeat(4,auto);gap:26px;margin:30px 0 26px}.cov-stats b{display:block;font-size:30px;font-weight:800;letter-spacing:-.05em;color:var(--ink)}.cov-stats span{font:10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cover-meta{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px;flex-wrap:wrap}.cover-meta strong{font-weight:600}.dot{width:4px;height:4px;background:var(--mint);border-radius:50%}
+.cov-photo{height:560px;border-radius:22px}.cov-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#07121b 0,transparent 30%),linear-gradient(0deg,#07121bcc,transparent 40%);pointer-events:none}
+.cov-badge{position:absolute;top:18px;right:18px;z-index:2;font:11px var(--mono);letter-spacing:.12em;color:var(--mint);background:#07121bd9;border:1px solid #2c5d5c;border-radius:99px;padding:7px 12px}
+.cov-photo figcaption{z-index:2}
+/* escalera */
+.ladder{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:end;flex:1;padding-top:40px}
+.rung{border:1px solid var(--line);border-radius:16px 16px 6px 6px;padding:18px;background:linear-gradient(180deg,#112a35,#0a1821);display:flex;flex-direction:column;gap:8px;transition:opacity .5s,border-color .5s}
+.rung i{font:500 12px var(--mono);color:var(--mint);font-style:normal}.rung b{font-size:24px;letter-spacing:-.04em}.rung q{font-size:18px;color:var(--mint);quotes:none;font-weight:700}
+.rung p{font-size:13.5px;line-height:1.5}.rung em{margin-top:auto;font-style:normal;font:12px/1.55 var(--mono);color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.rung.r1{height:300px}.rung.r2{height:350px}.rung.r3{height:400px}.rung.r4{height:450px}
+.rung.r3,.rung.r4{opacity:.55}.rung.r3 q,.rung.r4 q{color:var(--blue)}.rung.r3 i,.rung.r4 i{color:var(--blue)}
+.rung.r3.on,.rung.r4.on{opacity:.5}
+#c-box.m .bx:not(.key){opacity:.3}#c-box.m .key rect{stroke:var(--orange)}#c-box .bx{transition:opacity .5s}
+#c-city .crow{transition:opacity .5s}#c-city.m .crow:not(.qg){opacity:.3}
+#c-par rect{transition:fill .5s,fill-opacity .5s}#c-par.m rect.ptop{fill:var(--mint);fill-opacity:.85}
+#c-oil .dot{fill:var(--mint);transition:fill .7s}#c-oil.m .dot{fill:var(--c)}
+.bracket{position:absolute;left:0;width:calc(50% - 7px);bottom:364px;border:1.5px solid var(--mint);border-bottom:0;height:20px;border-radius:10px 10px 0 0;font:12px var(--mono);color:var(--mint);text-align:center;letter-spacing:.1em}
+.bracket span{position:relative;top:-11px;background:var(--bg);padding:0 10px}
+.ladder-note{position:absolute;right:0;top:4px;font:12px var(--mono);color:var(--muted)}
+.rung.r1.m,.rung.r2.m{border-color:#3b8f7f;box-shadow:0 0 0 1px #3b8f7f55,0 20px 50px #37e6b612}
+/* ruta */
+.route{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:6px}
+.rc{border:1px solid var(--line);border-radius:16px;padding:20px;background:linear-gradient(160deg,#112a35,#0a1821);min-height:370px;display:flex;flex-direction:column;gap:9px}
+.rc i{font:800 40px var(--sans);letter-spacing:-.06em;color:#1f4c55;font-style:normal;line-height:1}.rc small{font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
+.rc h3{font-size:21px;line-height:1.15}.rc q{quotes:none;color:var(--muted);font-size:14.5px;line-height:1.45;font-style:italic}
+.rc .tags{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px}.rc .tags span{font:10.5px var(--mono);border:1px solid #2c4d55;border-radius:99px;padding:4px 9px;color:#a7c3c8}
+.rc .sl{font:11px var(--mono);color:var(--dim);letter-spacing:.06em}
+.flow{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:40px}.flow span{font:600 17px var(--sans);padding:12px 22px;border:1px solid #2c5d5c;border-radius:99px;color:var(--mint);background:#0c2a2a99}.flow b{color:#3f7a72;font-size:20px}
+/* problema */
+.out{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start}.out .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font:800 24px var(--sans)}
+.out.o .ic{background:#3a2a17;color:var(--orange)}.out.b .ic{background:#132f47;color:var(--blue)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+/* datos */
+table.files{width:100%;border-collapse:collapse;font-size:13px}table.files td{padding:6px 8px;border-bottom:1px solid #1b3540}table.files td:first-child{font:12px var(--mono);color:var(--mint)}table.files td:nth-child(2){text-align:right;font-weight:700;font-variant-numeric:tabular-nums}table.files td:last-child{color:var(--muted);font-size:12px}
+table.files tr.big td{background:#0f2b2b}
+/* verificación */
+.vbar{display:flex;height:58px;border-radius:12px;overflow:hidden;gap:3px}.vbar div{display:flex;align-items:center;padding:0 16px;font:700 15px var(--sans);color:#07121b;white-space:nowrap}
+.vbar .ok{background:var(--ok)}.vbar .wa{background:var(--warn)}.vbar .ba{background:var(--bad)}
+.vrow{display:grid;grid-template-columns:120px 1fr 26px 1fr;gap:14px;align-items:center;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:#0b1a23}
+.st{font:700 12px var(--mono);padding:4px 9px;border-radius:7px;text-align:center}.st.ba{color:var(--bad);background:#3b1717}.st.wa{color:var(--warn);background:#3a2e10}.st.ok{color:var(--ok);background:#0f3320}
+.vrow .q{color:var(--muted);font-size:14px}.vrow .a{color:var(--ink);font-size:14px;font-weight:600}.vrow .arr{color:var(--dim);text-align:center}
+/* listas de pasos */
+.method{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:10px}
+.ms{border:1px solid var(--line);border-radius:14px;padding:16px;background:#0b1a23;display:flex;flex-direction:column;gap:9px;min-height:360px;position:relative}
+.ms .ej{font-size:13px;line-height:1.45;color:var(--ink);background:#0f2530;border-radius:9px;padding:9px 10px}.ms .ej:before{content:"Ej.: ";color:var(--mint);font-weight:700}
+.ms:not(:last-child):after{content:"→";position:absolute;right:-12px;top:44%;color:var(--mint);font-size:16px}
+.ms i{font:500 12px var(--mono);color:var(--mint);font-style:normal}.ms h3{font-size:16px;line-height:1.2}.ms p{font-size:13px;line-height:1.45}
+.ms .pb{margin-top:auto;font:11px/1.45 var(--mono);color:#a7c3c8;border-top:1px solid var(--line);padding-top:9px}.ms .pb:before{content:"Power BI · ";color:var(--orange)}
+.why{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 12px;border-left:2px solid #2c5d5c;background:#0b1a23;border-radius:0 10px 10px 0}
+.why i{font:800 18px var(--sans);color:var(--mint);font-style:normal}.why p{font-size:13.5px;line-height:1.45;color:var(--ink)}.why p em{font-style:normal;color:var(--muted);display:block;font:11.5px var(--mono);margin-top:3px}
+.why.h{border-color:#6d5233}.why.h i{color:var(--orange)}
+/* causalidad */
+.crit{display:grid;grid-template-columns:210px 1.1fr 1.4fr 150px;gap:16px;align-items:center;padding:19px 18px;border:1px solid var(--line);border-radius:12px;background:#0b1a23}
+.crit h3{font-size:18px;margin:0}.crit p{font-size:15px;line-height:1.45}.crit .q{color:var(--muted)}.crit .ex{color:var(--ink)}
+.crit-h{display:grid;grid-template-columns:200px 1.1fr 1.4fr 150px;gap:16px;padding:0 16px 4px;font:10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+/* cierre */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:6px}
+.pp{border:1px solid var(--line);border-radius:14px;padding:18px;background:#0b1a23;position:relative;min-height:220px;display:flex;flex-direction:column;gap:8px}
+.pp:not(:last-child):after{content:"→";position:absolute;right:-12px;top:40%;color:var(--mint)}
+.pp i{font:500 12px var(--mono);color:var(--mint);font-style:normal;letter-spacing:.1em;text-transform:uppercase}.pp b{font-size:26px;letter-spacing:-.04em;line-height:1.1}.pp p{font-size:14px;line-height:1.45}
+blockquote{font-size:34px;line-height:1.35;letter-spacing:-.035em;margin:40px 0 30px;max-width:960px;font-weight:600}
+.team{display:flex;gap:8px;flex-wrap:wrap}.team span{font-size:13px;padding:8px 13px;border:1px solid var(--line);border-radius:99px;color:var(--muted)}
+.refs{display:grid;gap:14px}.refs div{padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:#0b1a23;font-size:15.5px;line-height:1.55;color:var(--muted)}.refs div b{color:var(--ink)}.refs i{color:var(--ink)}
+.legend{display:flex;gap:16px;font:11px var(--mono);color:var(--muted);flex-wrap:wrap}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.heatlegend{display:flex;align-items:center;gap:10px;font:11px var(--mono);color:var(--muted)}.heatlegend .g{height:10px;width:220px;border-radius:5px;background:linear-gradient(90deg,#67baff,#2a3a42 45%,#2a3a42 55%,#ffb86b)}
+/* HUD */
+.controls{position:fixed;left:0;right:0;bottom:0;height:54px;display:flex;align-items:center;justify-content:center;gap:16px;z-index:5}
+.controls button{width:34px;height:34px;border:1px solid var(--line);background:#0b1d27;color:var(--ink);border-radius:50%;font-size:16px;cursor:pointer;transition:.2s}.controls button:hover{color:var(--mint);border-color:var(--mint);transform:translateY(-2px)}
+#counter{font:11px var(--mono);color:var(--muted);min-width:58px;text-align:center}#dots{display:flex;gap:5px;min-width:40px}#dots i{width:6px;height:6px;border-radius:50%;background:#24414b;transition:.3s}#dots i.on{background:var(--mint)}
+.progress{position:fixed;left:0;bottom:0;height:2px;background:var(--mint);transition:width .35s;z-index:7}
+.hint{position:fixed;right:22px;bottom:20px;color:#5f7c85;font:10px var(--mono);z-index:6}
+#notes{position:fixed;right:16px;bottom:62px;width:min(420px,calc(100% - 32px));max-height:52vh;overflow:auto;z-index:20;background:#061017f5;border:1px solid #2d5560;border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.55;color:#c9dbde;display:none;box-shadow:0 20px 50px #000a}
+#notes.show{display:block}#notes h4{margin:0 0 8px;font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}#notes ol{margin:0;padding-left:20px}#notes li{margin-bottom:6px}#notes li.now{color:#fff}#notes li.now::marker{color:var(--mint)}
+.nt{display:none}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;transition-delay:0s!important}}
+</style>
 </head>
 <body>
-  <canvas id="particles" aria-hidden="true"></canvas>
-  <main class="deck" aria-live="polite">
-    <section class="slide cover active">
-      <div class="eyebrow">Tema 4 · Grupo 4</div>
-      <h1>Qué pasó<span>y por qué.</span></h1>
-      <p class="lead">Analítica descriptiva y diagnóstica para convertir datos de negocio en preguntas, hallazgos y decisiones.</p>
-      <div class="cover-meta"><strong>Derlis Lopez</strong><i class="dot"></i><strong>Jose Pacheco</strong><i class="dot"></i><strong>Stalin Tumbaco</strong><i class="dot"></i><strong>Marcos Zambrano</strong></div>
-      <div class="orb"><div class="orb-core"><b>3.1</b>DESCUBRIR · EXPLICAR</div></div>
-      <div class="note">Caso de referencia: ventas de Corporación Favorita</div>
-    </section>
-    <section class="slide">
-      <div class="eyebrow">01 / La pregunta de negocio</div><h2>Primero, entender<br>el <span class="mint">fenómeno.</span></h2>
-      <div class="two-col"><div><p>Una cadena minorista debe equilibrar disponibilidad y desperdicio. El análisis comienza por medir qué cambió, dónde y cuándo.</p><p>La memoria de Kreplak estudia las ventas por producto y tienda para apoyar la planificación del inventario.</p></div><div class="card"><div class="stat">¿Qué?</div><div class="stat-label">Describir el resultado observado</div><div style="height:18px"></div><div class="stat blue">¿Por qué?</div><div class="stat-label">Investigar explicaciones con evidencia</div></div></div>
-      <div class="note">Describir orienta la investigación; no equivale a explicar causalmente.</div>
-    </section>
-    <section class="slide">
-      <div class="eyebrow">02 / Caso Favorita</div><h2>Muchos datos.<br>Una unidad de análisis.</h2>
-      <div class="two-col"><div class="data-list"><div class="data-chip"><b>125 M</b>filas de ventas reportadas</div><div class="data-chip"><b>54</b>tiendas</div><div class="data-chip"><b>4.100</b>productos en catálogo</div><div class="data-chip"><b>83,5 mil</b>registros de transacciones</div><div class="data-chip"><b>Calendario</b>feriados y eventos</div><div class="data-chip"><b>Contexto</b>promoción, ubicación, petróleo</div></div><div><p>La combinación clave para comparar es <span class="mint">tienda × producto × fecha</span>. Añadir catálogo, promociones y calendario ayuda a describir diferencias y formular hipótesis.</p><p class="source-note">Cifras transcritas del trabajo de 2018; corresponden a los archivos de aquella competición, no a datos actuales.</p></div></div>
-    </section>
-    <section class="slide">
-      <div class="eyebrow">03 / Exploración</div><h2>Una cifra no basta.</h2><p>Resume el centro, la variabilidad y la forma de los datos. Las ventas suelen tener ceros y una cola larga: la media puede ocultar el comportamiento típico.</p>
-      <div class="metric-grid"><article class="metric-card"><div class="tag">CENTRO</div><h3>Media + mediana</h3><p>La media refleja el total promedio; la mediana resiste mejor unos pocos picos altos.</p><div class="tiny-hist" aria-label="Histograma esquemático"><i style="height:20%"></i><i style="height:35%"></i><i style="height:60%"></i><i style="height:85%"></i><i style="height:67%"></i><i style="height:41%"></i><i style="height:24%"></i><i style="height:13%"></i><i style="height:8%"></i></div></article><article class="metric-card"><div class="tag">DISPERSIÓN</div><h3>IQR + percentiles</h3><p>Muestran cuánto varía la venta habitual y ayudan a comparar tiendas con escalas distintas.</p><div class="tiny-boxes" aria-label="Diagramas de caja esquemáticos"><i></i><i style="transform:scaleY(.72)"></i><i style="transform:scaleY(1.15)"></i></div></article><article class="metric-card"><div class="tag">FORMA</div><h3>Distribución</h3><p>Histograma y caja revelan asimetría, concentración, ceros y observaciones extremas.</p><div class="tiny-heat" aria-label="Mapa de calor esquemático"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article></div>
-      <div class="note">En el ejemplo gráfico, las formas son ilustrativas; no se calcularon sobre el CSV de Kaggle.</div>
-    </section>
-    <section class="slide">
-      <div class="eyebrow">04 / Patrones en el tiempo</div><h2>El calendario deja<br><span class="mint">huellas.</span></h2>
-      <div class="two-col"><div><p>Una serie temporal permite separar tendencia, ciclos recurrentes y cambios puntuales. Compara periodos equivalentes y marca promociones y feriados.</p><p>Los picos son pistas para investigar, no causas explicadas por el gráfico.</p><div class="legend"><span><i></i>transacciones (ilustrativo)</span><span><i class="l2"></i>referencia suavizada</span></div></div><div class="card chart-card"><div class="chart-title">Serie diaria · patrón conceptual</div><svg class="chart" viewBox="0 0 520 280" role="img" aria-label="Serie temporal ilustrativa con picos que motivan investigar eventos"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7cf4c8" stop-opacity=".3"/><stop offset="1" stop-color="#7cf4c8" stop-opacity="0"/></linearGradient></defs><path class="gridline" d="M40 45H500M40 105H500M40 165H500M40 225H500"/><text class="axis" x="8" y="48">alto</text><text class="axis" x="10" y="228">bajo</text><text class="axis" x="40" y="252">sem 1</text><text class="axis" x="235" y="252">sem 2</text><text class="axis" x="447" y="252">sem 4</text><path class="area" d="M40 177L60 170L80 185L100 157L120 163L140 148L160 166L180 140L200 154L220 142L240 75L260 145L280 156L300 135L320 143L340 130L360 160L380 150L400 91L420 157L440 165L460 130L480 140L500 118V230H40Z"/><path class="line" d="M40 177L60 170L80 185L100 157L120 163L140 148L160 166L180 140L200 154L220 142L240 75L260 145L280 156L300 135L320 143L340 130L360 160L380 150L400 91L420 157L440 165L460 130L480 140L500 118"/><path class="line2" d="M40 168C100 166 130 160 180 155S265 151 310 148S385 151 430 148S475 144 500 141"/><circle class="alert" cx="240" cy="75" r="6"/><circle class="alert" cx="400" cy="91" r="6"/></svg></div></div>
-      <div class="note">Figura 9 del informe muestra transacciones diarias de 2013–2017; esta visualización es una recreación didáctica, no los valores originales.</div>
-    </section>
-    <section class="slide">
-      <div class="eyebrow">05 / Segmentación</div><h2>El total esconde<br><span class="blue">grupos distintos.</span></h2>
-      <div class="two-col"><div><p>Desglosa por periodo, familia de producto, promoción y tipo o zona de tienda. Compara grupos similares para no confundir tamaño con desempeño.</p><div class="pill" style="display:inline-block">TIENDA × TIPO</div><div class="pill" style="display:inline-block">FAMILIA × PROMO</div><div class="pill" style="display:inline-block">DÍA × FERIADO</div></div><div class="card"><div class="chart-title">Ventas relativas por grupo · esquema</div><div class="bars"><div class="bar-group"><div class="bar" style="height:48%"></div><div class="bar-label">A</div></div><div class="bar-group"><div class="bar" style="height:72%"></div><div class="bar-label">B</div></div><div class="bar-group"><div class="bar" style="height:55%"></div><div class="bar-label">C</div></div><div class="bar-group"><div class="bar" style="height:88%"></div><div class="bar-label">D</div></div><div class="bar-group"><div class="bar" style="height:39%"></div><div class="bar-label">E</div></div></div><div class="chart-title">Unidades / periodo comparable</div></div></div>
-      <div class="note">Comparación conceptual; los grupos y alturas no corresponden a resultados publicados.</div>
-    </section>
-    <section class="slide">
-      <div class="eyebrow">06 / Referencia del documento · 1 de 2</div><div class="reference"><div><div class="ref-number">FIGURAS 7 + 8 · PÁGINA IMPRESA 21</div><h2>Tiendas que se<br>parecen. Y difieren.</h2><p>El informe visualiza cómo se asignan tiendas a clusters y cómo estos se distribuyen por tipo de tienda. Es una base clara para comparar zonas y formatos.</p><p>Pregunta diagnóstica: ¿qué explica una caída concentrada en un cluster? Desglosar producto, promoción, calendario y disponibilidad antes de concluir.</p><div class="source-note">Kreplak (2018), figuras 7–8. El mosaico y las barras a la derecha son una ilustración inspirada en la estructura de esas figuras.</div></div><div class="card"><div class="chart-title">Cluster × tienda · visual inspirado en fig. 7</div><div class="mini-matrix" aria-hidden="true"><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="matrix-caption"><span>cluster →</span><span>tiendas ↓</span></div><div style="height:20px"></div><div class="chart-title">Tipo de tienda · distribución ilustrativa</div><div class="stacked"><div class="stack" style="height:54%"><i style="--h:30%"></i><i style="--h:32%"></i><i style="--h:38%"></i></div><div class="stack" style="height:82%"><i style="--h:15%"></i><i style="--h:40%"></i><i style="--h:25%"></i><i style="--h:20%"></i></div><div class="stack" style="height:69%"><i style="--h:40%"></i><i style="--h:20%"></i><i style="--h:40%"></i></div><div class="stack" style="height:95%"><i style="--h:32%"></i><i style="--h:24%"></i><i style="--h:20%"></i><i style="--h:24%"></i></div><div class="stack" style="height:42%"><i style="--h:52%"></i><i style="--h:48%"></i></div></div><div class="stack-labels"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span></div></div></div></section>
-    <section class="slide">
-      <div class="eyebrow">07 / Referencia del documento · 2 de 2</div><div class="reference"><div><div class="ref-number">FIGURA 9 · PÁGINA IMPRESA 23</div><h2>Una serie es<br>un <span class="orange">detector de pistas.</span></h2><p>La memoria presenta una serie diaria de transacciones entre 2013 y 2017, con picos y variación. Esta visualización permite señalar anomalías y ciclos para examinarlos.</p><p>Para explicar un pico: localizar la fecha, desglosar por tienda y familia, contrastar feriados y promociones, y verificar si el dato es válido.</p><div class="source-note">Kreplak (2018), figura 9. La serie original y esta recreación no comparten valores: la curva de la derecha es solo pedagógica.</div></div><div class="card chart-card"><div class="chart-title">Transacciones diarias · esquema visual de inspección</div><svg class="chart" viewBox="0 0 520 280" role="img" aria-label="Serie conceptual con alta variabilidad y picos aislados"><path class="gridline" d="M40 45H500M40 105H500M40 165H500M40 225H500"/><text class="axis" x="40" y="252">2013</text><text class="axis" x="165" y="252">2014</text><text class="axis" x="290" y="252">2015</text><text class="axis" x="415" y="252">2016–17</text><path class="line" d="M40 177L48 135L55 171L62 126L70 183L77 155L84 162L91 118L98 177L105 150L112 165L119 143L126 171L133 95L140 168L147 178L154 149L161 161L168 125L175 179L182 152L189 167L196 130L203 174L210 148L217 74L224 169L231 180L238 141L245 166L252 155L259 186L266 116L273 175L280 145L287 164L294 127L301 173L308 157L315 87L322 177L329 166L336 138L343 174L350 151L357 183L364 121L371 170L378 155L385 167L392 144L399 174L406 105L413 166L420 181L427 136L434 163L441 145L448 173L455 122L462 169L469 158L476 179L483 138L490 169L500 148"/><path class="line2" d="M40 160C120 158 180 157 250 158S380 159 500 157"/><circle class="alert" cx="133" cy="95" r="5"/><circle class="alert" cx="217" cy="74" r="5"/><circle class="alert" cx="315" cy="87" r="5"/><circle class="alert" cx="406" cy="105" r="5"/></svg><div class="legend"><span><i></i>variación (ilustrativa)</span><span><i class="l2"></i>nivel base</span></div></div></div></section>
-    <section class="slide">
-      <div class="eyebrow">08 / Del síntoma a la hipótesis</div><h2>Investigar con método.</h2><p>Una caída agregada puede venir de pocos productos, algunas tiendas o un cambio de calendario. Desglosa, prioriza y contrasta hipótesis.</p><div class="diagnostic"><div class="step"><b>01</b><h3>Desglosar</h3><p>¿Qué segmento aporta el cambio?</p></div><div class="step"><b>02</b><h3>Priorizar</h3><p>Pareto: ¿dónde se concentra el impacto?</p></div><div class="step"><b>03</b><h3>Preguntar</h3><p>Cinco porqués sobre el proceso afectado.</p></div><div class="step"><b>04</b><h3>Mapear</h3><p>Ishikawa: método, producto, entorno, medición.</p></div><div class="step"><b>05</b><h3>Verificar</h3><p>Contrastar cada causa con evidencia.</p></div></div><div class="tools"><span class="pill">Pareto ≠ explicación completa</span><span class="pill">Hipótesis ≠ causa probada</span><span class="pill">Comparar periodos equivalentes</span></div></section>
-    <section class="slide">
-      <div class="eyebrow">09 / Interpretar asociaciones</div><h2>Correlación no es<br><span class="orange">causalidad.</span></h2><div class="compare"><article class="card"><div class="ref-number">ASOCIACIÓN</div><h3>Se mueven juntas</h3><p>Si más promociones coinciden con más ventas, hay correlación. Puede influir el feriado, la disponibilidad o una decisión de promoción ante una demanda esperada.</p><div class="equation">A ↔ B</div></article><article class="card"><div class="ref-number" style="color:var(--orange)">CAUSALIDAD</div><h3>Una intervención cambia el resultado</h3><p>Para afirmar que la promoción elevó ventas, hace falta aislar explicaciones alternativas y estimar qué habría ocurrido sin ella.</p><div class="equation" style="color:var(--orange)">¿Qué habría pasado si…?</div></article></div><p style="margin-top:23px">En el informe, una correlación temporal con petróleo o transacciones puede orientar preguntas. No basta para atribuir la variación de ventas a esa variable.</p></section>
-    <section class="slide close">
-      <div class="eyebrow">10 / Cierre</div><h2>De observar a<br><span class="mint">decidir mejor.</span></h2><blockquote>“Un patrón describe lo que vemos. Un buen diagnóstico conecta ese patrón con evidencia verificable.”</blockquote><p>Favorita muestra cómo ventas, tiendas, productos y calendario pueden integrarse para descubrir dónde investigar. El paso final es validar antes de actuar.</p><div class="team"><span>Derlis Lopez</span><span>Jose Pacheco</span><span>Stalin Tumbaco</span><span>Marcos Zambrano</span></div><div class="source-note">Referencia: Gabriel Kreplak (2018), <i>Predicción de Ventas de Comestibles Corporación Favorita</i>, capítulos 4 y 6, figuras 7–9. Gráficos esquemáticos con fines didácticos.</div>
-    </section>
-  </main>
-  <div class="controls"><button id="prev" aria-label="Diapositiva anterior">←</button><span id="counter">01 / 10</span><button id="next" aria-label="Diapositiva siguiente">→</button></div><div class="progress" id="progress"></div><div class="hint">← → para navegar · F pantalla completa</div>
-  <script>
-    const slides=[...document.querySelectorAll('.slide')], counter=document.getElementById('counter'), progress=document.getElementById('progress');let current=0;
-    function show(index){current=(index+slides.length)%slides.length;slides.forEach((s,i)=>s.classList.toggle('active',i===current));counter.textContent=`${String(current+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;progress.style.width=`${(current+1)/slides.length*100}%`}
-    document.getElementById('prev').onclick=()=>show(current-1);document.getElementById('next').onclick=()=>show(current+1);
-    document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.()}});
-    const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let particles=[],raf;
-    function resize(){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0);particles=Array.from({length:Math.min(65,Math.floor(innerWidth/22))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.23,vy:(Math.random()-.5)*.23,r:Math.random()*1.6+.4}))}
-    function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<particles.length;i++){const p=particles[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(124,244,200,.55)';ctx.fill();for(let j=i+1;j<particles.length;j++){const q=particles[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.hypot(dx,dy);if(d<115){ctx.strokeStyle=`rgba(103,186,255,${.11*(1-d/115)})`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}}}if(!reduce)raf=requestAnimationFrame(draw)}
-    addEventListener('resize',resize);resize();draw();show(0);
-  </script>
+<canvas id="particles" aria-hidden="true"></canvas>
+<main id="stage" aria-live="polite">
+
+<!-- ============ 01 PORTADA ============ -->
+<section class="slide cover" data-part="0">
+  <div>
+    <div class="eyebrow">Tema 4 · Grupo 4 · Sílabo 3.1</div>
+    <h1>Qué pasó<span>y por qué.</span></h1>
+    <p class="lead">Analítica descriptiva y diagnóstica aplicada a las ventas de Corporación Favorita, reconstruidas en un dashboard de Power BI a partir de los datos originales.</p>
+    <div class="cov-stats">
+      <div><b class="num" data-to="125.5" data-dec="1" data-suf=" M">0</b><span>filas de ventas</span></div>
+      <div><b class="num" data-to="54">0</b><span>tiendas</span></div>
+      <div><b class="num" data-to="4100">0</b><span>productos</span></div>
+      <div><b class="num" data-to="1682">0</b><span>días · 2013–2017</span></div>
+    </div>
+    <div class="cover-meta"><strong>Derlis Lopez</strong><i class="dot"></i><strong>Jose Pacheco</strong><i class="dot"></i><strong>Stalin Tumbaco</strong><i class="dot"></i><strong>Marcos Zambrano</strong></div>
+  </div>
+  <figure class="fig cov-photo">
+    <span class="cov-badge">CASO · CORPORACIÓN FAVORITA · ECUADOR</span>
+    <img class="web" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/SuperMaxi_Bosque_Entrada.JPG/960px-SuperMaxi_Bosque_Entrada.JPG" alt="Entrada de un Supermaxi dentro de un centro comercial de Quito">
+    <figcaption>Supermaxi, C. C. El Bosque (Quito): uno de los formatos de Corporación Favorita.<span class="cred">Foto: Wikimedia Commons · GFDL / CC BY-SA 3.0</span></figcaption>
+  </figure>
+  <div class="note">Fuentes: Kreplak (2018), TFM UOC · Kaggle, <i>Corporación Favorita Grocery Sales Forecasting</i> (2017) · Dashboard Power BI del grupo</div>
+  <aside class="nt"><ol><li>Presentar el tema (3.1) y al equipo. El caso: una cadena real de supermercados de Ecuador.</li><li>Las cifras de la portada vienen de los datos originales que cargamos en Power BI: 125,5 millones de filas de ventas.</li></ol></aside>
+</section>
+
+<!-- ============ 02 ESCALERA ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">01 · Marco del tema</div>
+  <h2>Cuatro preguntas. <span>Hoy respondemos dos.</span></h2>
+  <div class="ladder">
+    <div class="bracket" data-s="4"><span>TEMA 3.1 · NUESTRO FOCO</span></div>
+    <div class="ladder-note" data-s="4">↗ más valor · más dificultad · cada nivel se apoya en el anterior</div>
+    <div class="rung r1" data-s="1" data-m="4"><i>01</i><b>Descriptiva</b><q>¿Qué pasó?</q><p>KPIs, media y mediana, dispersión, distribuciones y series de tiempo.</p><em>Favorita: las ventas por tienda-día pasaron de 8.303 (2013) a 16.055 unidades (2017).</em></div>
+    <div class="rung r2" data-s="2" data-m="4"><i>02</i><b>Diagnóstica</b><q>¿Por qué pasó?</q><p>Desglose (drill-down), segmentación, línea base, anomalías, Pareto, Ishikawa.</p><em>Favorita: un festivo nacional vende +13,5 % frente a un día normal comparable.</em></div>
+    <div class="rung r3" data-s="3"><i>03</i><b>Predictiva</b><q>¿Qué pasará?</q><p>Modelos de pronóstico: la tesis usa LightGBM.</p><em>Favorita: ventas de los próximos 16 días por tienda y producto.</em></div>
+    <div class="rung r4" data-s="3"><i>04</i><b>Prescriptiva</b><q>¿Qué hacer?</q><p>Optimización y reglas de decisión.</p><em>Favorita: cuánto pedir de cada perecedero para no desperdiciar ni agotar.</em></div>
+  </div>
+  <aside class="nt"><ol><li>Descriptiva: resume lo ocurrido. Ejemplo real del dashboard: ventas por tienda-día casi se duplican.</li><li>Diagnóstica: explica el porqué comparando contra lo esperado (línea base).</li><li>Predictiva y prescriptiva: las mencionamos como contexto; la tesis llega a la predictiva.</li><li>Nuestro tema son los dos primeros escalones: sin ellos, los modelos predicen sin entender.</li></ol></aside>
+</section>
+
+<!-- ============ 03 RUTA ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">02 · Ruta de la exposición</div>
+  <h2>Cuatro partes, <span>un mismo hilo.</span></h2>
+  <div class="route">
+    <article class="rc" data-s="1"><i>01</i><small>Derlis Lopez</small><h3>Qué pasó y cómo medirlo</h3><q>¿Cuál es el comportamiento típico y cuánto varía?</q><p class="small">Problema de negocio, datos, verificación y medidas de centro y dispersión.</p><span class="sl">DIAPOSITIVAS 4–8</span><div class="tags"><span>problema</span><span>datos</span><span>verificación</span><span>media · mediana · IQR</span></div></article>
+    <article class="rc" data-s="2"><i>02</i><small>Jose Pacheco</small><h3>Ver patrones y segmentar</h3><q>¿Cómo hacemos visibles las diferencias?</q><p class="small">Series de tiempo, estacionalidad, segmentos por ciudad y tipo de tienda.</p><span class="sl">DIAPOSITIVAS 9–13</span><div class="tags"><span>serie temporal</span><span>mapa de calor</span><span>geografía</span><span>clusters</span></div></article>
+    <article class="rc" data-s="3"><i>03</i><small>Stalin Tumbaco</small><h3>Detectar e investigar cambios</h3><q>¿Qué hacemos cuando vemos un cambio?</q><p class="small">Anomalías frente a una línea base, desglose de festivos y método de diagnóstico.</p><span class="sl">DIAPOSITIVAS 14–18</span><div class="tags"><span>línea base</span><span>drill-down</span><span>Pareto</span><span>5 porqués · Ishikawa</span></div></article>
+    <article class="rc" data-s="4"><i>04</i><small>Marcos Zambrano</small><h3>Correlación, causalidad y cierre</h3><q>¿Cómo confirmamos si encontramos una causa?</q><p class="small">Petróleo y promociones como casos de correlación; criterios de causalidad.</p><span class="sl">DIAPOSITIVAS 19–23</span><div class="tags"><span>correlación</span><span>confusores</span><span>contrafactual</span><span>conclusión</span></div></article>
+  </div>
+  <div class="flow" data-s="5"><span>Medir</span><b>→</b><span>Visualizar</span><b>→</b><span>Segmentar</span><b>→</b><span>Investigar</span><b>→</b><span>Validar</span></div>
+  <aside class="nt"><ol><li>Derlis: el problema, los datos y cómo resumirlos.</li><li>Jose: gráficos y segmentos para encontrar patrones.</li><li>Stalin: qué hacer con un cambio o un valor raro.</li><li>Marcos: por qué una correlación no prueba una causa, y el cierre.</li><li>El hilo conductor es este proceso de cinco pasos; lo retomamos al final.</li></ol></aside>
+</section>
+
+<!-- ============ 04 PROBLEMA ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">03 · El problema de negocio</div>
+  <h2>Pronosticar mal <span>cuesta en ambos sentidos.</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.05fr">
+    <div class="col" style="gap:14px">
+      <p>Corporación Favorita opera cientos de supermercados en Ecuador (Supermaxi, Megamaxi, Akí) con más de 200.000 productos. En 2017 lanzó un reto en Kaggle porque planificaba con <b>métodos subjetivos, pocos datos y poca automatización</b>.</p>
+      <div class="chips"><span class="pill">Kaggle · oct-2017 → ene-2018</span><span class="pill">1.675 equipos en el ranking</span><span class="pill">Métrica NWRMSLE</span></div>
+      <div class="card out o" data-s="1"><div class="ic">↑</div><div><h3>Si el pronóstico es alto</h3><p>Sobra inventario perecedero: merma y desperdicio. El <b>24 %</b> del catálogo es perecedero (986 de 4.100) y la métrica lo pondera <b>×1,25</b>.</p></div></div>
+      <div class="card out b" data-s="2"><div class="ic">↓</div><div><h3>Si el pronóstico es bajo</h3><p>Quiebre de stock: perchas vacías, ventas perdidas y clientes molestos.</p></div></div>
+      <div class="lesson" data-s="4">Antes de predecir hay que entender: <b>¿qué pasó con las ventas y por qué?</b> Esa es la analítica descriptiva y diagnóstica.</div>
+    </div>
+    <figure class="fig fx-z" data-s="3" style="height:470px">
+      <img class="web" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Supermaxi_protestas_2022.jpg/960px-Supermaxi_protestas_2022.jpg" alt="Perchas vacías en un Supermaxi">
+      <figcaption>Perchas vacías en un Supermaxi durante las protestas de 2022. Aquí la causa fue un <b>evento externo</b>, no el pronóstico: distinguir una cosa de la otra es justamente diagnóstico.<span class="cred">Foto: Sucre es la hostia · Wikimedia Commons · CC BY-SA 4.0</span></figcaption>
+    </figure>
+  </div>
+  <aside class="nt"><ol><li>Sobre-pronóstico: los perecederos se dañan; por eso la métrica de Kaggle les da más peso (1,25).</li><li>Sub-pronóstico: se agota el producto y se pierde la venta.</li><li>La foto: perchas vacías por un evento externo. Mismo síntoma, causa distinta.</li><li>Pregunta guía de toda la exposición.</li></ol></aside>
+</section>
+
+<!-- ============ 05 DATOS ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">04 · Los datos</div>
+  <h2>8 archivos, <span>un modelo estrella.</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.08fr;gap:26px">
+    <div class="col">
+      <div class="ctitle"><span>Archivos de Kaggle</span><span>filas</span></div>
+      <table class="files">
+        <tr class="big"><td>train.csv</td><td>125.497.040</td><td>ventas: fecha × tienda × producto</td></tr>
+        <tr><td>test.csv</td><td>3.370.464</td><td>16 días a predecir</td></tr>
+        <tr><td>transactions.csv</td><td>83.488</td><td>tickets por tienda y día</td></tr>
+        <tr><td>items.csv</td><td>4.100</td><td>familia, clase, perecedero</td></tr>
+        <tr><td>oil.csv</td><td>1.218</td><td>precio diario del petróleo</td></tr>
+        <tr><td>holidays_events.csv</td><td>350</td><td>feriados y eventos</td></tr>
+        <tr><td>stores.csv</td><td>54</td><td>ciudad, provincia, tipo, cluster</td></tr>
+      </table>
+      <div class="card" data-s="1" style="display:flex;gap:16px;align-items:center"><div class="kpi" style="flex:none;white-space:nowrap"><b class="num" data-to="2.06" data-dec="2" data-suf=" M">0</b><span>filas resumidas</span></div><p class="small">Un ETL en Python resume <b>train.csv sin muestreo</b> a fecha × tienda × familia (125,5 M → 2,06 M filas) y calcula 83.606 tienda-días con su tipo de día.</p></div>
+      <div class="row" data-s="3" style="gap:10px;justify-content:space-between"><div class="kpi b"><b class="num" data-to="22">0</b><span>tablas</span></div><div class="kpi b"><b class="num" data-to="16">0</b><span>relaciones</span></div><div class="kpi b"><b class="num" data-to="145">0</b><span>medidas DAX</span></div><div class="kpi b"><b class="num" data-to="14">0</b><span>páginas</span></div></div>
+    </div>
+    <div class="card" style="padding:12px 14px" data-s="2"><div class="ctitle"><span>Modelo semántico en Power BI</span><span>relaciones muchos → uno</span></div><svg class="ch" id="c-star"></svg></div>
+  </div>
+  <aside class="nt"><ol><li>train.csv es enorme (4,7 GB); por eso se resume con Python antes de Power BI, sin perder filas.</li><li>Modelo estrella: los hechos (ventas, tienda-día) en el centro; las dimensiones (fecha, tienda, familia, tipo de día) alrededor. Así cualquier medida se puede filtrar por cualquier dimensión.</li><li>Resultado: 22 tablas, 16 relaciones, 145 medidas y 14 páginas.</li></ol></aside>
+</section>
+
+<!-- ============ 06 VERIFICAR ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">05 · Calidad del dato</div>
+  <h2>Antes de describir, <span>verificar.</span></h2>
+  <p style="max-width:900px;margin-bottom:16px">El dashboard contrasta <b>30 cifras de la tesis</b> con los datos originales. Un documento publicado también puede traer erratas: el primer paso del diagnóstico es confirmar el dato.</p>
+  <div class="vbar growx anim"><div class="ok" style="flex:19">✓ 19 coinciden</div><div class="wa" style="flex:7;--i:1">⚠ 7 matices</div><div class="ba" style="flex:4;--i:2">✗ 4 no</div></div>
+  <div class="col" style="margin-top:16px;gap:9px">
+    <div class="vrow fx-l" data-s="1"><span class="st ba">✗ NO COINCIDE</span><span class="q">“Clasificación de tienda entre 8 tipos”</span><span class="arr">→</span><span class="a">Hay 5 tipos (A–E)</span></div>
+    <div class="vrow fx-l" data-s="2"><span class="st ba">✗ NO COINCIDE</span><span class="q">Test: “16 días desde el 18/8/2017”</span><span class="arr">→</span><span class="a">El archivo empieza el 16/8/2017</span></div>
+    <div class="vrow fx-l" data-s="3"><span class="st wa">⚠ MATIZ</span><span class="q">“≈16 % de onpromotion vacío”</span><span class="arr">→</span><span class="a">17,3 %, todo antes de abril de 2014</span></div>
+    <div class="vrow fx-l" data-s="4"><span class="st wa">⚠ MATIZ</span><span class="q">“59 millones de registros de 2017”</span><span class="arr">→</span><span class="a">59 M son desde 2016; 2017 tiene 23,8 M</span></div>
+    <div class="vrow fx-l" data-s="5"><span class="st ba">✗ NO COINCIDE</span><span class="q">“Posición pública 265 de 1.675”</span><span class="arr">→</span><span class="a">La captura muestra el puesto 534; 265 es lo que subió</span></div>
+    <div class="vrow fx-l" data-s="6"><span class="st ok">✓ COINCIDE</span><span class="q">“Picos de transacciones a fin de año”</span><span class="arr">→</span><span class="a">Máximo diario 171.169 el 24-dic-2015</span></div>
+  </div>
+  <div class="lesson" data-s="7" style="margin-top:14px"><b>Regla 1:</b> ante un valor raro, preguntar primero si es un error del dato, de la definición o un evento real.</div>
+  <aside class="nt"><ol><li>8 tipos en el texto, 5 en los datos.</li><li>Fechas del test mal transcritas.</li><li>Matiz: el porcentaje de nulos es algo mayor y se concentra antes de abril de 2014.</li><li>Matiz: los 59 M incluyen 2016.</li><li>Error en la posición pública: la propia captura de la tesis dice 534.</li><li>También hay aciertos: los picos de diciembre se confirman.</li><li>Lección: verificar es parte de la analítica descriptiva.</li></ol></aside>
+</section>
+
+<!-- ============ 07 CENTRO Y DISPERSIÓN ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">06 · Medidas descriptivas</div>
+  <h2>Una cifra <span>no basta.</span></h2>
+  <div class="grid2" style="grid-template-columns:1.5fr 1fr;gap:20px">
+    <div class="card"><div class="ctitle"><span>Unidades vendidas por tienda-día</span><span>83.606 tienda-días · 2013–2017</span></div><svg class="ch" id="c-hist"></svg></div>
+    <div class="col" style="gap:14px">
+      <div class="kpi" data-s="1"><b class="num" data-to="10021">0</b><span>Mediana · el día típico</span></div>
+      <div class="kpi o" data-s="2"><b class="num" data-to="12841">0</b><span>Media · +28 % sobre la mediana</span></div>
+      <div class="kpi b" data-s="3"><b>6.480 – 15.715</b><span>Rango intercuartílico (P25–P75)</span></div>
+      <div class="kpi p" data-s="4"><b>33.092 · 2,2</b><span>Percentil 95 · asimetría</span></div>
+      <div class="lesson" data-s="4">Cola larga a la derecha (diciembre, tiendas grandes): la media se desplaza. Para el día típico, reportar <b>mediana + IQR</b>.</div>
+    </div>
+  </div>
+  <aside class="nt"><ol><li>Histograma real: la mayoría de tienda-días vende entre 5 y 15 mil unidades.</li><li>Mediana: el valor del medio. No se mueve con pocos días extremos.</li><li>Media: arrastrada por la cola de días muy altos.</li><li>IQR: el 50 % central. Mide dispersión sin depender de extremos.</li><li>P95 y asimetría 2,2 confirman la cola larga.</li></ol></aside>
+</section>
+
+<!-- ============ 08 CAJA POR TIPO ============ -->
+<section class="slide" data-part="1">
+  <div class="eyebrow">07 · Distribución por grupo</div>
+  <h2>Mismo indicador, <span>escalas distintas.</span></h2>
+  <div class="grid2" style="grid-template-columns:1.45fr 1fr;gap:20px">
+    <div class="card"><div class="ctitle"><span>Unidades por tienda-día según tipo de tienda</span><span>caja = P25–P75 · bigotes = P5–P95</span></div><svg class="ch" id="c-box" data-m="1"></svg></div>
+    <div class="col" style="gap:12px">
+      <div class="card" data-s="1"><div class="tag">Centro</div><h3>A vende 3,8× la mediana de C</h3><p>Tipo A: 23.270 unidades (9 tiendas). Tipo C: 6.176 (15 tiendas).</p></div>
+      <div class="card" data-s="2"><div class="tag">Dispersión</div><h3>La caja de A es casi 5× más ancha</h3><p>IQR de 17,0 mil frente a 3,5 mil: el tamaño también trae más variabilidad.</p></div>
+      <div class="card" data-s="3"><div class="tag">Consecuencia</div><h3>Comparar con índices, no con totales</h3><p>Cada tienda contra su propia línea base, o tasas por tienda-día.</p></div>
+      <div class="next" data-s="3">Siguiente: <b>¿cómo hacemos visibles las diferencias?</b> → Jose</div>
+    </div>
+  </div>
+  <aside class="nt"><ol><li>El diagrama de caja compara centro y dispersión de varios grupos a la vez.</li><li>Tipos A y C: escalas muy distintas.</li><li>Más tamaño, más variabilidad.</li><li>Por eso, para diagnosticar, cada tienda se compara consigo misma. Paso a Jose.</li></ol></aside>
+</section>
+
+<!-- ============ 09 SERIE TEMPORAL ============ -->
+<section class="slide" data-part="2">
+  <div class="eyebrow">08 · Serie temporal</div>
+  <h2>1.682 días de <span>transacciones.</span></h2>
+  <div class="card" style="padding:12px 16px 8px"><div class="ctitle"><span>Transacciones diarias, total de tiendas (miles) · pasa el cursor para ver cada día</span><span class="legend"><span><i style="background:var(--mint)"></i>diario</span><span data-s="3"><i style="background:var(--blue)"></i>media móvil 28 días</span></span></div><svg class="ch" id="c-tx"></svg></div>
+  <div class="row" style="margin-top:12px;gap:12px;flex:1;min-height:0">
+    <figure class="fig" style="width:250px;flex:none"><img class="web" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/SuperMaxi_Bosque_Cajas.JPG/960px-SuperMaxi_Bosque_Cajas.JPG" alt="Cajas registradoras de un Supermaxi"><figcaption>1 transacción = 1 ticket en caja.<span class="cred">Wikimedia Commons · GFDL / CC BY-SA 3.0</span></figcaption></figure>
+    <div class="card" data-s="1" style="flex:1"><div class="tag" style="color:var(--orange)">Picos</div><h3>24 de diciembre, cada año</h3><p>171.169 el 24-dic-2015: <b>2,0×</b> el promedio diario (84.114).</p></div>
+    <div class="card" data-s="2" style="flex:1"><div class="tag" style="color:var(--blue)">Huecos</div><h3>Un hueco también es un dato</h3><p>25-dic sin registros y 1-ene casi en cero: tiendas cerradas, no errores.</p></div>
+    <div class="card" data-s="3" style="flex:1"><div class="tag">Nivel</div><h3>Tendencia + ritmo semanal</h3><p>La media móvil separa el nivel del ruido diario de fines de semana.</p></div>
+    <figure class="fig paper" data-s="4" style="width:200px;flex:none"><img src="img/fig09_transacciones.png" alt="Figura 9 de la tesis"><figcaption>Tesis, fig. 9: por tienda-día (máx. 8.359, tienda 44).</figcaption></figure>
+  </div>
+  <aside class="nt"><ol><li>La serie completa: 1.682 días con datos. Se ven ritmo semanal y picos de fin de año.</li><li>Picos: todos los años el 23–24 de diciembre.</li><li>Huecos: el 25-dic no hay registros y el 1-ene casi nada. Es información del negocio (cierres).</li><li>Media móvil: muestra el nivel sin el ruido diario.</li><li>La figura 9 de la tesis muestra lo mismo a nivel tienda-día.</li></ol></aside>
+</section>
+
+<!-- ============ 10 MAPA DE CALOR ============ -->
+<section class="slide" data-part="2">
+  <div class="eyebrow">09 · Estacionalidad</div>
+  <h2>El calendario <span>deja huellas.</span></h2>
+  <div class="grid2" style="grid-template-columns:1.5fr 1fr;gap:20px">
+    <div class="card"><div class="ctitle"><span>Ventas por tienda-día · día de semana × mes</span><span>índice 100 = día normal promedio</span></div><svg class="ch" id="c-heat"></svg>
+      <div class="heatlegend" style="margin-top:8px"><span>por debajo</span><span class="g"></span><span>por encima</span><span style="margin-left:auto">solo días normales (sin feriados)</span></div></div>
+    <div class="col" style="gap:12px">
+      <div class="card" data-s="1"><div class="tag">Fin de semana</div><h3>Sábado 122 · domingo 132</h3><p>El domingo vende un tercio más que un día promedio.</p></div>
+      <div class="card" data-s="2"><div class="tag" style="color:var(--blue)">El día más flojo</div><h3>Jueves: 79</h3><p>21 % bajo el promedio; útil para planificar reposición.</p></div>
+      <div class="card" data-s="3"><div class="tag" style="color:var(--orange)">Temporada</div><h3>Diciembre: 119</h3><p>Aun sin contar feriados, diciembre es el mes más alto.</p></div>
+      <div class="lesson" data-s="4">Para comparar dos días hay que igualar <b>día de semana y mes</b>; si no, confundimos “domingo” con “éxito”.</div>
+    </div>
+  </div>
+  <aside class="nt"><ol><li>Mapa de calor: cruza dos dimensiones del calendario. Naranja = sobre el promedio; azul = bajo.</li><li>Las filas de fin de semana resaltan.</li><li>El jueves es sistemáticamente el más bajo.</li><li>Diciembre resalta incluso sin feriados.</li><li>Conclusión metodológica: comparar periodos equivalentes.</li></ol></aside>
+</section>
+
+<!-- ============ 11 GEOGRAFÍA ============ -->
+<section class="slide" data-part="2">
+  <div class="eyebrow">10 · Segmentación geográfica</div>
+  <h2>El total esconde <span>concentración.</span></h2>
+  <div class="grid2" style="grid-template-columns:1.35fr 1fr;gap:20px">
+    <div class="card"><div class="ctitle"><span>Participación por ciudad</span><span class="legend"><span><i style="background:#5b7a88"></i>% de tiendas</span><span data-s="1"><i style="background:var(--mint)"></i>% de unidades vendidas</span></span></div><svg class="ch" id="c-city" data-m="2"></svg></div>
+    <div class="col" style="gap:12px">
+      <figure class="fig" style="height:220px"><img class="web" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Megamaxi_Quicentro_Sur_Quito.jpg/960px-Megamaxi_Quicentro_Sur_Quito.jpg" alt="Megamaxi Quicentro Sur en Quito"><figcaption>Megamaxi Quicentro Sur, Quito: la ciudad con 18 de las 54 tiendas.<span class="cred">Foto: Emilio Mondragón · Wikimedia Commons · CC BY-SA 4.0</span></figcaption></figure>
+      <div class="card" data-s="2"><div class="row" style="align-items:center"><div class="kpi"><b>48,1 % → 63,3 %</b><span>tiendas → unidades</span></div></div><p style="margin-top:6px">Quito y Guayaquil tienen menos de la mitad de las tiendas, pero casi dos tercios de las ventas.</p></div>
+      <div class="lesson o" data-s="3"><b>Cuidado:</b> ciudad, tamaño y formato de tienda se mezclan. Comparar desempeño por tienda-día y dentro del mismo tipo.</div>
+    </div>
+  </div>
+  <aside class="nt"><ol><li>Barra gris: qué parte de las tiendas está en cada ciudad.</li><li>Barra menta: qué parte de las unidades vende esa ciudad. Quito vende el 51,9 % con el 33 % de las tiendas.</li><li>Juntas, Quito y Guayaquil: 63,3 %.</li><li>Segmentar revela concentración, pero no dice si esas tiendas son “mejores”: puede ser tamaño.</li></ol></aside>
+</section>
+
+<!-- ============ 12 CLUSTERS (TESIS) ============ -->
+<section class="slide" data-part="2">
+  <div class="eyebrow">11 · Segmentación de tiendas · tesis, figuras 7 y 8</div>
+  <h2>Tiendas que se parecen <span>y difieren.</span></h2>
+  <div class="row" style="gap:16px;height:400px">
+    <figure class="fig paper" style="flex:1;background:#000"><img src="img/fig07_clusters.png" alt="Figura 7: tiendas y su cluster"><figcaption>Fig. 7 · Cada tienda (fila) asignada a 1 de 17 clusters (columna).</figcaption></figure>
+    <figure class="fig paper fx-z" data-s="1" style="flex:1"><img src="img/fig08_tipos.png" alt="Figura 8: tipos de tienda por cluster"><figcaption>Fig. 8 · Tiendas por tipo (A–E), apiladas por cluster.</figcaption></figure>
+  </div>
+  <div class="row" style="margin-top:14px;gap:14px">
+    <div class="card" data-s="2" style="flex:1"><div class="tag">Qué muestran</div><p><b>17 clusters, 5 tipos, 22 ciudades.</b> Un mismo tipo reúne varios clusters: tipo y cluster son segmentaciones distintas. El dashboard corrige la tesis: dice “8 tipos” y menciona 16 y 17 clusters.</p></div>
+    <div class="card" data-s="3" style="flex:1"><div class="tag" style="color:var(--orange)">Pregunta diagnóstica</div><p>Si un cluster cae en ventas: ¿cambió la <b>mezcla de productos</b>, hubo una <b>promoción</b>, un <b>feriado local</b> o falta de <b>disponibilidad</b>? Desglosar antes de concluir.</p></div>
+  </div>
+  <aside class="nt"><ol><li>Figura 7: la tesis muestra a qué cluster pertenece cada tienda.</li><li>Figura 8: cómo se reparten los clusters dentro de cada tipo de tienda.</li><li>Lectura: son dos formas de agrupar; además, verificamos el número real de tipos.</li><li>Una diferencia entre grupos no explica su causa: es el punto de partida.</li></ol></aside>
+</section>
+
+<!-- ============ 13 NORMALIZAR ============ -->
+<section class="slide" data-part="2">
+  <div class="eyebrow">12 · Comparar lo comparable</div>
+  <h2>¿Crecimiento real <span>o más tiendas?</span></h2>
+  <div class="grid2" style="gap:20px;flex:none">
+    <div class="card"><div class="ctitle"><span>Tiendas con ventas en el año</span><span>de 47 a 54</span></div><svg class="ch" id="c-yr1"></svg></div>
+    <div class="card" data-s="1"><div class="ctitle"><span>Unidades promedio por tienda-día</span><span>+93 % · 2013 → 2017</span></div><svg class="ch" id="c-yr2"></svg></div>
+  </div>
+  <div class="row" style="margin-top:16px;gap:14px">
+    <div class="lesson" data-s="2" style="flex:1.4">El total del año mezcla dos efectos: <b>más tiendas abiertas</b> y <b>más venta en cada tienda</b>. Dividir por tienda-día aísla el segundo; el primero se analiza aparte.</div>
+    <div class="next" data-s="3" style="margin:0;align-self:center">Siguiente: <b>¿qué hacemos cuando vemos un cambio?</b> → Stalin</div>
+  </div>
+  <aside class="nt"><ol><li>Primero: el número de tiendas activas también creció (47 → 54).</li><li>Normalizando por tienda-día, las ventas igual crecen +93 %.</li><li>Normalizar es segmentar bien: separar efectos que el total mezcla. Paso a Stalin.</li></ol></aside>
+</section>
+
+<!-- ============ 14 ANOMALÍAS ============ -->
+<section class="slide" data-part="3">
+  <div class="eyebrow">13 · Anomalías</div>
+  <h2>¿Anomalía o evento? <span>Define lo esperado.</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.2fr;gap:22px">
+    <div class="col" style="gap:12px">
+      <p>Una anomalía es un valor que se aparta de lo esperado. Para medir “cuánto se aparta” hace falta una referencia justa.</p>
+      <div class="card" data-s="1" style="border-color:#2c5d5c"><div class="tag">Línea base del dashboard</div><p style="color:var(--ink);font:13.5px/1.6 var(--mono);margin-top:6px">índice = unidades del día ÷ línea base − 1</p><p class="small" style="margin-top:4px">Línea base = promedio de la <b>misma tienda</b>, el <b>mismo día de la semana</b> y el <b>mismo mes</b>, en días normales.</p></div>
+      <div class="card" data-s="2"><div class="tag" style="color:var(--orange)">Checklist ante un pico o caída</div><p class="small" style="margin-top:6px">1 ¿El dato es válido? · 2 ¿Feriado o evento? · 3 ¿Promoción? · 4 ¿Cierre o falta de stock? · 5 ¿Cambio real de demanda?</p></div>
+      <div class="chips" data-s="4"><span class="pill o">24-dic +44,4 %</span><span class="pill o">Traslado de Año Nuevo +67,7 %</span><span class="pill b">Día de la Madre −25,6 %</span></div>
+      <div class="card" data-s="5"><div class="tag">Tipos de día en el dashboard · mediana vs. línea base</div><p class="small" style="margin-top:6px;color:var(--ink)">Normal −1,3 % · Festivo +11,2 % · Evento −5,4 % · Terremoto +3,9 % · Laborable recuperado +2,6 %</p></div>
+    </div>
+    <div class="card" data-s="3"><div class="ctitle"><span>Terremoto de Manabí · 16-abr-2016 · 53 tiendas</span><span>índice vs. línea base</span></div><svg class="ch" id="c-quake"></svg>
+      <p class="small" style="margin-top:6px">Día 0: <b>−13,2 %</b>. Días 2 a 5: <b>+68 %, +61,5 %, +45,9 %, +39,8 %</b>. Kaggle advierte que las donaciones de agua y productos básicos alteraron las ventas varias semanas.</p></div>
+  </div>
+  <aside class="nt"><ol><li>La línea base compara cada tienda consigo misma en condiciones equivalentes (día de semana y mes).</li><li>El checklist evita culpar al pronóstico de algo que fue un evento.</li><li>Terremoto: caída el mismo día y pico de compras de emergencia y donaciones después. Es un evento, no un error.</li><li>Otros ejemplos reales del dashboard: Navidad sube, Día de la Madre baja.</li><li>Resumen por tipo de día: un día normal queda casi en la línea base (−1,3 %), lo que confirma que la referencia es justa.</li></ol></aside>
+</section>
+
+<!-- ============ 15 DRILL-DOWN ============ -->
+<section class="slide" data-part="3">
+  <div class="eyebrow">14 · Drill-down</div>
+  <h2>Del total al detalle: <span>los festivos.</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.15fr;gap:20px">
+    <div class="col" style="gap:12px">
+      <div class="row" style="gap:22px"><div class="kpi o"><b>+11,2 %</b><span>Nivel 0 · festivo (mediana)</span></div><div class="kpi b"><b>+9,6 %</b><span>transacciones en festivo</span></div></div>
+      <div class="card" data-s="1"><div class="ctitle"><span>Nivel 1 · por ámbito del festivo</span><span>vs. línea base</span></div><svg class="ch" id="c-amb"></svg></div>
+      <div class="lesson" data-s="3">El promedio de festivos (+11 %) esconde <b>efectos opuestos</b>. Cada nivel de desglose produce una hipótesis nueva.</div>
+    </div>
+    <div class="card" data-s="2"><div class="ctitle"><span>Nivel 2 · festivos individuales</span><span>5 más altos y 5 más bajos</span></div><svg class="ch" id="c-hol"></svg>
+      <p class="small" style="margin-top:4px">Un festivo nacional afecta a las 54 tiendas; uno regional, a su provincia; uno local, solo a su ciudad.</p></div>
+  </div>
+  <aside class="nt"><ol><li>Nivel 0: en general, un festivo vende más que un día comparable.</li><li>Nivel 1: los regionales y nacionales suben; los locales bajan (−3,8 %).</li><li>Nivel 2: Año Nuevo y Navidad suben mucho; Carnaval, Viernes Santo y vísperas de fundación bajan.</li><li>Drill-down: bajar de nivel hasta que el patrón se vuelve explicable.</li></ol></aside>
+</section>
+
+<!-- ============ 16 PARETO ============ -->
+<section class="slide" data-part="3">
+  <div class="eyebrow">15 · Priorizar</div>
+  <h2>Pareto: <span>dónde mirar primero.</span></h2>
+  <div class="card" style="padding:12px 16px 8px"><div class="ctitle"><span>Participación de cada familia en las unidades vendidas y acumulado</span><span>33 familias · 2013–2017</span></div><svg class="ch" id="c-par" data-m="2"></svg></div>
+  <div class="row" style="margin-top:14px;gap:14px">
+    <div class="kpi" data-s="2" style="flex:none"><b>6 de 33 → 82,6 %</b><span>familias → unidades</span></div>
+    <div class="lesson" data-s="3" style="flex:1">Ante una caída total, empezar por estas seis familias: allí un cambio pequeño mueve el total. <b>Pareto prioriza; no explica.</b></div>
+  </div>
+  <div class="note">Unidades tal como vienen en train.csv (piezas o kg según el producto).</div>
+  <aside class="nt"><ol><li>Barras: peso de cada familia, de mayor a menor.</li><li>Línea: porcentaje acumulado.</li><li>Seis familias (abarrotes, bebidas, frutas y verduras, limpieza, lácteos y panadería) superan el 80 %.</li><li>Pareto dice dónde investigar primero, no por qué cambió.</li></ol></aside>
+</section>
+
+<!-- ============ 17 ISHIKAWA + 5 PORQUÉS ============ -->
+<section class="slide" data-part="3">
+  <div class="eyebrow">16 · Ordenar hipótesis</div>
+  <h2>5 porqués <span>+ Ishikawa.</span></h2>
+  <div class="grid2" style="grid-template-columns:.95fr 1.4fr;gap:20px">
+    <div class="col" style="gap:8px">
+      <div class="ctitle"><span>5 porqués · caso del dashboard</span></div>
+      <div class="why" data-s="4"><i>1</i><p>¿Por qué los festivos locales bajan −3,8 %?<em>Dato: víspera de Fundación de Quito −8,0 %; de Guayaquil −17,5 %.</em></p></div>
+      <div class="why h" data-s="5"><i>2</i><p>¿Por qué esas fechas? H1: parte de los clientes sale de la ciudad.<em>Evidencia: ¿suben las tiendas de ciudades vecinas?</em></p></div>
+      <div class="why h" data-s="6"><i>3</i><p>¿Por qué no se recupera? H2: la compra se mueve a otros días.<em>Evidencia: índice de los días +1 y +2.</em></p></div>
+      <div class="lesson o" data-s="7"><b>H = hipótesis.</b> Los porqués ordenan la búsqueda; solo la evidencia convierte una hipótesis en causa.</div>
+    </div>
+    <div class="card" style="padding:12px 14px"><div class="ctitle"><span>Diagrama de Ishikawa (causa-efecto)</span><span>categorías de causas posibles</span></div><svg class="ch" id="c-fish"></svg></div>
+  </div>
+  <aside class="nt"><ol><li>Efecto a explicar: festivos locales bajo la línea base, cuando los regionales suben.</li><li>Espinas de medición y calendario: ¿la línea base y la asignación del feriado son correctas?</li><li>Clientes y tienda: viajes, horarios, formato.</li><li>Producto y comercial: familias y promociones.</li><li>Porqué 1: el dato que motiva la pregunta.</li><li>Porqué 2: primera hipótesis y qué dato la probaría.</li><li>Porqué 3: hipótesis alternativa.</li><li>Ninguna hipótesis es causa hasta contrastarla.</li></ol></aside>
+</section>
+
+<!-- ============ 18 MÉTODO ============ -->
+<section class="slide" data-part="3">
+  <div class="eyebrow">17 · Del síntoma a la causa</div>
+  <h2>Un método, <span>seis pasos.</span></h2>
+  <p style="margin-bottom:6px">Pregunta: <b>¿por qué bajaron las ventas de una familia de productos en algunas tiendas?</b></p>
+  <div class="method">
+    <div class="ms" data-s="1"><i>01</i><h3>Confirmar la métrica</h3><p>Periodo de comparación y datos completos.</p><div class="ej">¿unidades o transacciones? ¿mismo mes del año anterior?</div><div class="pb">tabla de verificación ✓ ⚠ ✗</div></div>
+    <div class="ms" data-s="2"><i>02</i><h3>Desglosar</h3><p>Tienda, ciudad, cluster, familia, día, promoción, feriado.</p><div class="ej">festivos → ámbito → festivo individual.</div><div class="pb">segmentadores y drill-down</div></div>
+    <div class="ms" data-s="3"><i>03</i><h3>Visualizar</h3><p>Serie temporal y distribución entre grupos equivalentes.</p><div class="ej">serie diaria con el 24 y el 25 de diciembre marcados.</div><div class="pb">línea, caja, mapa de calor</div></div>
+    <div class="ms" data-s="4"><i>04</i><h3>Priorizar</h3><p>Qué tiendas o productos explican la mayor parte de la caída.</p><div class="ej">6 familias = 82,6 % de las unidades.</div><div class="pb">Pareto por familia</div></div>
+    <div class="ms" data-s="5"><i>05</i><h3>Formular hipótesis</h3><p>Disponibilidad, promoción, calendario, precio, demanda.</p><div class="ej">¿los clientes viajan en el feriado local?</div><div class="pb">Ishikawa + 5 porqués</div></div>
+    <div class="ms" data-s="6"><i>06</i><h3>Validar</h3><p>Evidencia temporal y un grupo comparable sin el cambio.</p><div class="ej">misma tienda, mismo día de semana y mes.</div><div class="pb">índice vs. línea base</div></div>
+  </div>
+  <div class="next" data-s="7">Siguiente: <b>¿cómo confirmamos si encontramos una causa?</b> → Marcos</div>
+  <aside class="nt"><ol><li>No empezar sin confirmar qué se mide.</li><li>Desglosar hasta localizar dónde ocurre la caída.</li><li>Ver la forma del cambio.</li><li>Concentrarse donde está el impacto.</li><li>Listar causas posibles.</li><li>Contrastar cada una con datos. Paso a Marcos.</li></ol></aside>
+</section>
+
+<!-- ============ 19 PETRÓLEO ============ -->
+<section class="slide" data-part="4">
+  <div class="eyebrow">18 · Correlación</div>
+  <h2>Petróleo y ventas: <span>r = −0,74.</span></h2>
+  <div class="grid2" style="grid-template-columns:1.25fr 1fr;gap:20px">
+    <div class="card"><div class="ctitle"><span>56 meses · precio del petróleo vs. ventas por tienda-día</span><span>1 punto = 1 mes</span></div><svg class="ch" id="c-oil" data-m="2"></svg></div>
+    <div class="col" style="gap:12px">
+      <p>Ecuador depende del petróleo: entre 2013 y 2016 el barril cayó de 110,62 a 26,19 USD (−76 %).</p>
+      <div class="card" data-s="1"><div class="tag">Asociación fuerte</div><h3>r = −0,741</h3><p>Cuando el petróleo baja, las ventas suben. ¿El petróleo barato <b>causa</b> más ventas?</p></div>
+      <div class="card" data-s="2"><div class="tag" style="color:var(--orange)">El tiempo lo explica</div><h3>Dos tendencias que coinciden</h3><p>El petróleo cayó mientras las ventas por tienda crecían +93 %. Los puntos se ordenan por año.</p></div>
+      <div class="card" data-s="3" style="border-color:#6d5233"><div class="tag" style="color:var(--orange)">Sin tendencia</div><h3>Cambios mes a mes: r = 0,04</h3><p>Por año: 2014 −0,74 · 2015 −0,48 · 2016 +0,36 · 2017 +0,23. La relación no es estable: <b>el tiempo es una variable de confusión</b>.</p></div>
+    </div>
+  </div>
+  <aside class="nt"><ol><li>Cada punto es un mes. La nube baja de izquierda a derecha: correlación negativa fuerte.</li><li>La tentación: concluir que el petróleo barato hace vender más.</li><li>Coloreando por año: lo que vemos son dos tendencias en el tiempo.</li><li>Si quitamos la tendencia, la correlación desaparece. Correlación ≠ causalidad.</li></ol></aside>
+</section>
+
+<!-- ============ 20 PROMOCIONES ============ -->
+<section class="slide" data-part="4">
+  <div class="eyebrow">19 · Causalidad</div>
+  <h2>Promoción y ventas: <span>¿causa o selección?</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.1fr;gap:20px">
+    <div class="col" style="gap:12px">
+      <div class="card"><div class="ctitle"><span>Unidades por línea de venta · abr-2014 → ago-2017</span></div><svg class="ch" id="c-promo"></svg></div>
+      <div class="card" data-s="1"><div class="ctitle"><span>Con promo ÷ sin promo, por familia</span><span>1,0 = sin diferencia</span></div><svg class="ch" id="c-pfam"></svg></div>
+    </div>
+    <div class="col" style="gap:12px">
+      <div class="card" data-s="1"><div class="tag" style="color:var(--orange)">Explicaciones alternativas</div>
+        <p class="small" style="margin-top:6px"><b>Selección:</b> se promocionan productos que ya venden más. · <b>Calendario:</b> las promociones coinciden con temporada alta. · <b>Mezcla:</b> el efecto aparente va de 1,81× (bebidas) a 0,94× (comida preparada). · <b>Disponibilidad y precio.</b></p></div>
+      <div class="card" data-s="2" style="border-color:#2c5d5c"><div class="tag">Contrafactual</div><h3>¿Qué habría pasado sin la promoción?</h3><p class="small">Efecto = resultado con promoción − resultado del <b>mismo producto en tiendas similares sin ella</b>. Diseños: grupo de control, antes/después con control, prueba A/B.</p></div>
+      <div class="card" data-s="3"><div class="row" style="align-items:center;gap:14px"><div style="flex:1"><div class="tag">Otra tendencia compartida</div><p class="small">Las líneas en promoción pasaron de <b>2,7 %</b> (2014) a <b>11,5 %</b> (2017), igual que crecían las ventas.</p></div><svg class="ch" id="c-pyr" style="width:200px;flex:none"></svg></div></div>
+    </div>
+  </div>
+  <aside class="nt"><ol><li>Dato real: con promoción se venden 13,47 unidades por línea; sin promoción, 8,09 (+66,5 %).</li><li>Pero hay explicaciones alternativas; el efecto cambia mucho por familia.</li><li>Para hablar de causa hay que estimar el contrafactual con un grupo comparable.</li><li>Además, promociones y ventas crecieron a la vez: otra correlación temporal.</li></ol></aside>
+</section>
+
+<!-- ============ 21 CHECKLIST CAUSAL ============ -->
+<section class="slide" data-part="4">
+  <div class="eyebrow">20 · Antes de afirmar una causa</div>
+  <h2>Correlación <span>no es causalidad.</span></h2>
+  <div class="crit-h"><span>Criterio</span><span>Pregunta</span><span>En el caso Favorita</span><span>¿Se cumple?</span></div>
+  <div class="col" style="gap:8px">
+    <div class="crit fx-l" data-s="1"><h3>1 · Asociación</h3><p class="q">¿Las variables se mueven juntas?</p><p class="ex">Petróleo y ventas: r = −0,74.</p><span class="st ok">✓ SÍ</span></div>
+    <div class="crit fx-l" data-s="2"><h3>2 · Temporalidad</h3><p class="q">¿La causa ocurre antes del efecto?</p><p class="ex">Terremoto (día 0) → compras +68 % dos días después.</p><span class="st ok">✓ SÍ</span></div>
+    <div class="crit fx-l" data-s="3"><h3>3 · Sin confusores</h3><p class="q">¿Se descartaron tendencia, calendario y tamaño?</p><p class="ex">Petróleo: sin tendencia la correlación cae a 0,04.</p><span class="st ba">✗ NO</span></div>
+    <div class="crit fx-l" data-s="4"><h3>4 · Comparación justa</h3><p class="q">¿Hay un grupo similar sin la intervención?</p><p class="ex">Festivos vs. misma tienda, día de semana y mes.</p><span class="st ok">✓ SÍ</span></div>
+    <div class="crit fx-l" data-s="5"><h3>5 · Mecanismo</h3><p class="q">¿Existe una explicación plausible y verificable?</p><p class="ex">Promociones: falta probar con un grupo de control.</p><span class="st wa">⚠ PENDIENTE</span></div>
+  </div>
+  <div class="lesson" data-s="6" style="margin-top:14px">Lo ideal es <b>probar una intervención</b> (A/B) o un diseño causal. Sin eso, decimos “asociado con”, no “causado por”.</div>
+  <aside class="nt"><ol><li>La asociación es solo el punto de partida.</li><li>Orden temporal: la causa va primero.</li><li>Confusores: aquí el petróleo falla.</li><li>La línea base de festivos sí ofrece una comparación justa.</li><li>Promociones: hipótesis plausible pero no probada.</li><li>Lenguaje correcto para reportar resultados.</li></ol></aside>
+</section>
+
+<!-- ============ 22 TESIS / MODELO ============ -->
+<section class="slide" data-part="4">
+  <div class="eyebrow">21 · Lo que hizo la tesis</div>
+  <h2>Del diagnóstico <span>a la predicción.</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.05fr;gap:20px;flex:none">
+    <div class="col" style="gap:14px">
+      <div class="row" style="gap:20px"><div class="kpi"><b>269 / 1.675</b><span>puesto privado · top 16,1 %</span></div><div class="kpi b"><b>0,522</b><span>NWRMSLE privado</span></div><div class="kpi b"><b>40 · 16</b><span>atributos · modelos</span></div></div>
+      <div class="card" data-s="1"><div class="ctitle"><span>LightGBM · importancia de los atributos (gain)</span><span>top 3 = 76,5 %</span></div><svg class="ch" id="c-imp"></svg></div>
+    </div>
+    <div class="col" style="gap:10px">
+      <figure class="fig paper fx-z" data-s="2" style="height:184px"><img src="img/fig02_publico.png" alt="Figura 2: ranking público de Kaggle"><figcaption>Tesis, fig. 2 · Ranking público: NWRMSLE 0,513, puesto 534.</figcaption></figure>
+      <figure class="fig paper fx-z" data-s="2" style="height:184px"><img src="img/fig01_privado.png" alt="Figura 1: ranking privado de Kaggle"><figcaption>Tesis, fig. 1 · Ranking privado: 0,522, puesto 269 (subió 265).</figcaption></figure>
+    </div>
+  </div>
+  <div class="row" style="gap:14px;margin-top:14px">
+    <div class="lesson" data-s="3" style="flex:1">La propia tesis concluye que hace falta <b>conocimiento del negocio</b>: su análisis exploratorio mostró efectos de festivos, petróleo y promociones que el modelo no usó.</div>
+    <div class="lesson o" data-s="4" style="flex:1"><b>Conexión con el tema:</b> el diagnóstico descubre las variables que un buen pronóstico debería incorporar (tipo de día por tienda, eventos, promociones).</div>
+  </div>
+  <aside class="nt"><ol><li>Resultado de la tesis: puesto 269 de 1.675 en Kaggle.</li><li>El modelo se apoya casi solo en medias recientes de ventas (14, 30 y 7 días).</li><li>Captura original del ranking; verificamos que el puesto público era 534, no 265.</li><li>La lección del autor: falta conocimiento del negocio.</li><li>Ese conocimiento es exactamente lo que da la analítica diagnóstica.</li></ol></aside>
+</section>
+
+<!-- ============ 23 CIERRE ============ -->
+<section class="slide" data-part="4">
+  <div class="eyebrow">22 · Cierre</div>
+  <h2>De observar a <span>decidir mejor.</span></h2>
+  <div class="pipe">
+    <div class="pp" data-s="1"><i>Medir</i><b>10.021 vs 12.841</b><p>Mediana frente a media: el día típico no es el promedio.</p></div>
+    <div class="pp" data-s="2"><i>Visualizar</i><b>2,0×</b><p>El 24 de diciembre duplica las transacciones de un día promedio.</p></div>
+    <div class="pp" data-s="3"><i>Segmentar</i><b>63,3 %</b><p>Quito y Guayaquil concentran casi dos tercios de las unidades.</p></div>
+    <div class="pp" data-s="4"><i>Investigar</i><b>+13,5 %</b><p>Festivo nacional frente a un día normal comparable.</p></div>
+    <div class="pp" data-s="5"><i>Validar</i><b>−0,74 → 0,04</b><p>Sin la tendencia, la relación con el petróleo desaparece.</p></div>
+  </div>
+  <blockquote data-s="6">“Un patrón describe lo que vemos. Un buen diagnóstico conecta ese patrón con <span class="mint">evidencia verificable</span>.”</blockquote>
+  <div class="row" data-s="6" style="align-items:center;justify-content:space-between"><div class="team"><span>Derlis Lopez</span><span>Jose Pacheco</span><span>Stalin Tumbaco</span><span>Marcos Zambrano</span></div><span class="pill">Gracias · ¿Preguntas?</span></div>
+  <aside class="nt"><ol><li>Medir: resumir con la medida adecuada.</li><li>Visualizar: la serie muestra picos y huecos.</li><li>Segmentar: el total esconde concentración.</li><li>Investigar: comparar contra lo esperado.</li><li>Validar: descartar confusores antes de hablar de causa.</li><li>Cierre y preguntas.</li></ol></aside>
+</section>
+
+<!-- ============ 24 REFERENCIAS ============ -->
+<section class="slide" data-part="0">
+  <div class="eyebrow">Referencias</div>
+  <h2>Fuentes.</h2>
+  <div class="refs">
+    <div><b>Kreplak, G. (2018).</b> <i>Predicción de Ventas de Comestibles Corporación Favorita</i> [Trabajo Final de Máster, Máster en Inteligencia de Negocio y Big Data, Universitat Oberta de Catalunya]. Capítulos 4 y 6; figuras 1, 7, 8 y 9.</div>
+    <div><b>Kaggle (2017).</b> <i>Corporación Favorita Grocery Sales Forecasting</i>. Competición y descripción de los datos (incluida la nota sobre el terremoto del 16-04-2016).</div>
+    <div><b>Grupo 4 (2026).</b> Dashboard Power BI <i>Corporacion favorita analisis Holiday</i>: ETL en Python, modelo estrella (22 tablas, 145 medidas) y verificación de 30 cifras de la tesis. Todos los gráficos de esta presentación se calcularon con esos datos.</div>
+    <div><b>Fotografías · Wikimedia Commons:</b> SuperMaxi El Bosque, entrada y cajas (GFDL / CC BY-SA 3.0) · Megamaxi Quicentro Sur, Emilio Mondragón (CC BY-SA 4.0) · Supermaxi protestas 2022, Sucre es la hostia (CC BY-SA 4.0).</div>
+    <div><b>Herramientas:</b> Python (pandas) para el ETL · Power BI Desktop (PBIP, TMDL, DAX) para el dashboard · HTML y SVG para esta presentación (gráficos calculados desde <i>data.js</i>).</div>
+  </div>
+  <aside class="nt"><ol><li>Referencias para el informe y la presentación.</li></ol></aside>
+</section>
+
+</main>
+
+<div class="controls"><button id="prev" aria-label="Anterior">←</button><span id="counter">01 / 24</span><span id="dots"></span><button id="next" aria-label="Siguiente">→</button></div>
+<div class="progress" id="progress"></div>
+<div class="hint">→ avanzar paso · ← volver · N notas · F pantalla completa</div>
+<aside id="notes"></aside>
+<div id="tip"></div>
+
+<script src="data.js"></script>
+<script>
+const F=window.FAV||{};
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const fmt=(v,d=0)=>{const p=Math.abs(v).toFixed(d).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return(v<0?'−':'')+p.join(',')};
+const sg=(v,d=1)=>(v>0?'+':'')+fmt(v,d);
+const lin=(a,b,c,d)=>v=>c+(v-a)/(b-a)*(d-c);
+const MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const C={mint:'#7cf4c8',blue:'#67baff',orange:'#ffb86b',pink:'#ff7797',gray:'#5b7a88',ink:'#edf6f5',muted:'#9bb1b8',base:'#3a5560'};
+function chart(id,w,h,html){const s=document.getElementById(id);if(!s)return null;s.setAttribute('viewBox',`0 0 ${w} ${h}`);s.innerHTML=html;return s}
+const T=(x,y,t,cls='ax',a='start',st='')=>`<text class="${cls}" x="${x}" y="${y}" text-anchor="${a}"${st?` style="${st}"`:''}>${t}</text>`;
+const FN={'GROCERY I':'Abarrotes I','BEVERAGES':'Bebidas','PRODUCE':'Frutas/verduras','CLEANING':'Limpieza','DAIRY':'Lácteos','BREAD/BAKERY':'Panadería','POULTRY':'Aves','MEATS':'Carnes','PERSONAL CARE':'Cuidado pers.','DELI':'Deli','PREPARED FOODS':'Comida preparada'};
+const HN={'Traslado Primer dia del ano':'Traslado de Año Nuevo','Puente Primer dia del ano':'Puente de Año Nuevo','Navidad-1':'24 de diciembre','Navidad-2':'23 de diciembre','Dia del Trabajo':'Día del Trabajo','Primer Grito de Independencia':'Primer Grito (10-ago)','Fundacion de Quito-1':'Víspera Fund. de Quito','Batalla de Pichincha':'Batalla de Pichincha','Carnaval':'Carnaval','Viernes Santo':'Viernes Santo'};
+
+/* ---- 05 modelo estrella ---- */
+(()=>{const W=580,H=500,box=(x,y,w,h,t,s,c)=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#0b1a23" stroke="${c}" stroke-width="1.5"/>${T(x+12,y+23,t,'lbl')}${T(x+12,y+41,s,'lblm')}</g>`;
+const L=(d,c='#3b6b74',w=1.6)=>`<path class="draw anim" pathLength="1" d="${d}" fill="none" stroke="${c}" stroke-width="${w}"/>`;
+// hechos al centro, dimensiones alrededor; Festivos/Petróleo/Transacciones cuelgan de Calendario
+let g=L('M300 240 L230 86')+L('M300 240 L470 86')+L('M300 240 L470 240')+L('M300 240 L300 400')+L('M470 266 L470 356','#3b6b74',1.2)+L('M24 344 H12 V61 H40 M24 254 H12 M24 164 H12','#2a4c55',1.2);
+g+=box(40,34,190,54,'Calendario','2012–2017 · quincenas',C.blue)+box(380,34,190,54,'Tiendas','54 · ciudad, tipo, cluster',C.blue)+box(380,214,190,54,'Familias','33 · perecedero o no',C.blue)+box(380,356,190,54,'Productos','4.100 · clase · peso',C.blue)+box(205,400,190,54,'TiposDia','normal, festivo, evento…',C.blue);
+g+=box(24,140,140,48,'Festivos','350 registros','#2d5560')+box(24,230,140,48,'Petróleo','1.218 precios','#2d5560')+box(24,320,140,48,'Transacciones','83.488 registros','#2d5560');
+g+=`<rect x="195" y="196" width="190" height="88" rx="12" fill="#10312f" stroke="${C.mint}" stroke-width="2"/>`+T(210,224,'Ventas · TiendaDia','lbl')+T(210,244,'hechos: unidades, líneas,','lblm')+T(210,261,'promo, índice vs. base','lblm');
+g+=T(290,488,'centro: hechos · azul: dimensiones · gris: tablas por fecha','lblm','middle');
+chart('c-star',W,H,g)})();
+
+/* ---- 07 histograma ---- */
+(()=>{const h=F.hist;if(!h)return;const W=660,H=480,L=56,R=14,Tp=24,B=48,xm=h.e[h.e.length-1],ym=Math.max(...h.c)*1.12;
+const x=lin(0,xm,L,W-R),y=lin(0,ym,H-B,Tp);let g='';
+for(let v=0;v<ym;v+=5000)g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/>`+T(L-8,y(v)+4,fmt(v),'ax','end');
+for(let v=0;v<=xm;v+=10000)g+=T(x(v),H-B+18,v?fmt(v/1000)+' mil':'0','ax','middle');
+g+=T(L,Tp-8,'tienda-días','ax');
+g+=`<g data-s="3" class="fx-0"><rect x="${x(h.p25)}" y="${Tp}" width="${x(h.p75)-x(h.p25)}" height="${H-B-Tp}" fill="#ffffff" opacity=".06"/><path d="M${x(h.p25)} ${Tp}V${H-B+24}M${x(h.p75)} ${Tp}V${H-B+24}" stroke="${C.blue}" stroke-width="1.5" stroke-dasharray="4 4"/>${T(x(h.p25),H-B+38,'P25 '+fmt(h.p25),'lblm','middle','fill:'+C.blue)}${T(x(h.p75),H-B+38,'P75 '+fmt(h.p75),'lblm','middle','fill:'+C.blue)}</g>`;
+g+='<g class="grow anim">'+h.c.map((c,i)=>{const a=x(h.e[i]),b=x(h.e[i+1]);return `<rect style="--i:${i}" x="${a+1}" y="${y(c)}" width="${Math.max(1,b-a-2)}" height="${y(0)-y(c)}" rx="2" fill="${C.blue}" fill-opacity=".62" data-tip="${fmt(h.e[i])} – ${fmt(h.e[i+1])} unidades<br><b>${fmt(c)}</b> tienda-días"/>`}).join('')+'</g>';
+g+=`<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="${C.base}"/>`;
+const vl=(v,c,lab,ty,s,dash='')=>`<g data-s="${s}" class="fx-0"><line x1="${x(v)}" x2="${x(v)}" y1="${ty-10}" y2="${y(0)}" stroke="${c}" stroke-width="2.5" ${dash}/>${T(x(v)+7,ty,lab,'lbl','start','fill:'+c)}</g>`;
+g+=vl(h.med,C.mint,'Mediana '+fmt(h.med),Tp+14,1)+vl(h.mean,C.orange,'Media '+fmt(h.mean),Tp+40,2,'stroke-dasharray="7 4"')+vl(h.p95,C.pink,'P95 '+fmt(h.p95),Tp+66,4);
+chart('c-hist',W,H,g)})();
+
+/* ---- 08 caja por tipo ---- */
+(()=>{const D=F.box;if(!D)return;const W=660,H=470,L=56,R=14,Tp=16,B=46,ym=55000,y=lin(0,ym,H-B,Tp),bw=(W-L-R)/D.length;let g='';
+for(let v=0;v<=ym;v+=10000)g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/>`+T(L-8,y(v)+4,v?fmt(v/1000)+' mil':'0','ax','end');
+g+='<g class="grow anim">'+D.map((d,i)=>{const cx=L+bw*(i+.5),w=bw*.44,key=d.t=='A'||d.t=='C';return `<g class="bx${key?' key':''}" style="--i:${i*3}" data-tip="<b>Tipo ${d.t}</b> · ${d.n} tiendas<br>mediana ${fmt(d.med)}<br>P25–P75: ${fmt(d.q1)} – ${fmt(d.q3)}<br>P5–P95: ${fmt(d.p5)} – ${fmt(d.p95)}"><line x1="${cx}" x2="${cx}" y1="${y(d.p95)}" y2="${y(d.p5)}" stroke="${C.blue}" stroke-width="1.5"/><line x1="${cx-w/4}" x2="${cx+w/4}" y1="${y(d.p95)}" y2="${y(d.p95)}" stroke="${C.blue}" stroke-width="1.5"/><line x1="${cx-w/4}" x2="${cx+w/4}" y1="${y(d.p5)}" y2="${y(d.p5)}" stroke="${C.blue}" stroke-width="1.5"/><rect x="${cx-w/2}" y="${y(d.q3)}" width="${w}" height="${y(d.q1)-y(d.q3)}" rx="5" fill="${C.blue}" fill-opacity=".22" stroke="${C.blue}" stroke-width="1.5"/><line x1="${cx-w/2}" x2="${cx+w/2}" y1="${y(d.med)}" y2="${y(d.med)}" stroke="${C.mint}" stroke-width="3"/></g>`}).join('')+'</g>';
+D.forEach((d,i)=>{const cx=L+bw*(i+.5);g+=T(cx,H-B+20,'Tipo '+d.t,'axs','middle')+T(cx,H-B+36,d.n+' tiendas','ax','middle')});
+const xa=L+bw*.5,xc=L+bw*2.5;
+g+=`<g data-s="1" class="fx-0">${T(xa+bw*.3,y(D[0].med)+4,fmt(D[0].med),'lbl','start','fill:'+C.orange)}${T(xc+bw*.3,y(D[2].med)+4,fmt(D[2].med),'lbl','start','fill:'+C.orange)}</g>`;
+g+=`<g data-s="2" class="fx-0">${T(xa+bw*.3,y(D[0].q3)+14,'IQR '+fmt((D[0].q3-D[0].q1)/1000,1)+' mil','lblm','start','fill:'+C.orange)}${T(xc,y(D[2].p95)-10,'IQR '+fmt((D[2].q3-D[2].q1)/1000,1)+' mil','lblm','middle','fill:'+C.orange)}</g>`;
+chart('c-box',W,H,g)})();
+
+/* ---- 09 serie de transacciones ---- */
+(()=>{const t=F.tx;if(!t)return;const v=t.v,n=v.length,W=1168,H=262,L=44,R=12,Tp=14,B=26,x=lin(0,n-1,L,W-R),y=lin(0,180,H-B,Tp);
+const t0=Date.UTC(2013,0,1),ix=(Y,M,D)=>Math.round((Date.UTC(Y,M,D)-t0)/864e5);let g='',d='',pen=0;
+for(let k=0;k<=150;k+=50)g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(k)}" y2="${y(k)}"/>`+T(L-8,y(k)+4,k?k+' mil':'0','ax','end');
+for(let Y=2013;Y<=2017;Y++){const i=ix(Y,0,1);g+=`<line x1="${x(i)}" x2="${x(i)}" y1="${Tp}" y2="${H-B}" stroke="#1d3943"/>`+T(x(i)+4,H-B+18,Y,'ax')}
+v.forEach((a,i)=>{if(a==null){pen=0;return}d+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(a).toFixed(1);pen=1});
+g+=`<path class="draw anim" pathLength="1" d="${d}" fill="none" stroke="${C.mint}" stroke-width="1.1" stroke-linejoin="round"/>`;
+let m='';for(let i=0;i<n;i++){let s=0,c=0;for(let j=Math.max(0,i-27);j<=i;j++)if(v[j]!=null&&v[j]>20){s+=v[j];c++}if(c)m+=(m?'L':'M')+x(i).toFixed(1)+' '+y(s/c).toFixed(1)}
+g+=`<g data-s="3" class="fx-0"><path class="draw anim" pathLength="1" d="${m}" fill="none" stroke="${C.blue}" stroke-width="2.6"/></g>`;
+let pk='<g data-s="1" class="fx-0">';for(let Y=2013;Y<=2016;Y++){const i=ix(Y,11,24);pk+=`<circle cx="${x(i)}" cy="${y(v[i])}" r="6" fill="${C.orange}" stroke="#0d1e29" stroke-width="2.5"/>`}
+const i15=ix(2015,11,24);pk+=T(x(i15)-10,y(v[i15])+4,'24-dic-2015 · '+fmt(t.max),'lbl','end','fill:'+C.orange)+'</g>';g+=pk;
+let gp='<g data-s="2" class="fx-0">';for(let Y=2014;Y<=2017;Y++){const i=ix(Y,0,1),j=ix(Y-1,11,25);gp+=`<path d="M${x(j)-6} ${H-B+1}l6 -10 6 10z" fill="${C.blue}"/>`}
+gp+=T(x(ix(2016,0,1))+12,y(14),'25-dic sin datos · 1-ene ≈ 0','lbl','start','fill:'+C.blue)+'</g>';g+=gp;
+g+=`<g class="xh" style="display:none;pointer-events:none"><line y1="${Tp}" y2="${H-B}" stroke="#ffffff55"/><circle r="4" fill="${C.mint}"/></g><rect class="ov" x="${L}" y="${Tp}" width="${W-L-R}" height="${H-B-Tp}" fill="transparent"/>`;
+const s=chart('c-tx',W,H,g),xh=s.querySelector('.xh'),tip=$('#tip');
+s.querySelector('.ov').addEventListener('mousemove',e=>{const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(s.getScreenCTM().inverse()),i=Math.max(0,Math.min(n-1,Math.round((p.x-L)/(W-L-R)*(n-1)))),dt=new Date(t0+i*864e5);
+xh.style.display='';xh.querySelector('line').setAttribute('x1',x(i));xh.querySelector('line').setAttribute('x2',x(i));const c=xh.querySelector('circle');c.setAttribute('cx',x(i));c.setAttribute('cy',y(v[i]??0));
+tip.innerHTML=`${dt.getUTCDate()} ${MES[dt.getUTCMonth()]} ${dt.getUTCFullYear()}<br><b>${v[i]==null?'sin registros':fmt(v[i]*1000)+' transacciones'}</b>`;tip.style.opacity=1;place(e)});
+s.querySelector('.ov').addEventListener('mouseleave',()=>{xh.style.display='none';tip.style.opacity=0})})();
+
+/* ---- 10 mapa de calor ---- */
+(()=>{const M=F.heat;if(!M)return;const W=700,H=440,L=46,R=4,Tp=24,B=4,cw=(W-L-R)/12,ch=(H-Tp-B)/7,DI=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>{const A=hx(a),Bb=hx(b);return`rgb(${A.map((v,i)=>Math.round(v+(Bb[i]-v)*t)).join(',')})`};
+const col=v=>v>=100?mix('#2a3a42',C.orange,Math.min(1,(v-100)/38)):mix('#2a3a42',C.blue,Math.min(1,(100-v)/26));
+let g='';MES.forEach((m,j)=>g+=T(L+cw*(j+.5),Tp-8,m,'ax','middle'));DI.forEach((d,i)=>g+=T(L-8,Tp+ch*(i+.5)+4,d,'axs','end'));
+g+='<g class="pop anim">';M.forEach((r,i)=>r.forEach((v,j)=>{const lt=Math.abs(v-100)>22;g+=`<g style="--i:${i*12+j}" data-tip="<b>${DI[i]} · ${MES[j]}</b><br>índice ${v} (${sg(v-100,0)} % vs. promedio)"><rect x="${L+cw*j+1.5}" y="${Tp+ch*i+1.5}" width="${cw-3}" height="${ch-3}" rx="5" fill="${col(v)}"/>${T(L+cw*(j+.5),Tp+ch*(i+.5)+4,v,'ax','middle','fill:'+(lt?'#07121b':'#d8e6e8'))}</g>`}));g+='</g>';
+const fr=(x0,y0,w,h,c,s)=>`<rect data-s="${s}" class="fx-0" x="${x0}" y="${y0}" width="${w}" height="${h}" rx="7" fill="none" stroke="${c}" stroke-width="3"/>`;
+g+=fr(L-1,Tp+ch*5-1,cw*12+2,ch*2+2,C.mint,1)+fr(L-1,Tp+ch*3-1,cw*12+2,ch+2,C.blue,2)+fr(L+cw*11-1,Tp-1,cw+2,ch*7+2,C.orange,3);
+chart('c-heat',W,H,g)})();
+
+/* ---- 11 ciudades ---- */
+(()=>{const D=F.city;if(!D)return;const W=640,H=470,L=132,R=58,Tp=6,rh=(H-Tp)/D.length,x=lin(0,60,L,W-R);let a='',b='',lab='';
+D.forEach((d,i)=>{const y0=Tp+rh*i+10,qg=d.c=='Quito'||d.c=='Guayaquil';lab+=`<g class="crow${qg?' qg':''}">${T(L-10,y0+16,d.c,'lbl','end')}${T(L-10,y0+34,d.n+' tiendas','lblm','end')}</g>`;
+a+=`<rect class="crow${qg?' qg':''}" style="--i:${i}" x="${L}" y="${y0}" width="${x(d.s)-L}" height="19" rx="4" fill="${C.gray}" data-tip="<b>${d.c}</b><br>${fmt(d.s,1)} % de las tiendas"/>`;
+b+=`<rect class="crow${qg?' qg':''}" style="--i:${i}" x="${L}" y="${y0+23}" width="${x(d.u)-L}" height="19" rx="4" fill="${C.mint}" data-tip="<b>${d.c}</b><br>${fmt(d.u,1)} % de las unidades"/>`;
+lab+=`<g class="crow${qg?' qg':''}">${T(x(d.s)+6,y0+14,fmt(d.s,1)+' %','lblm')}<g data-s="1" class="fx-0">${T(x(d.u)+6,y0+37,fmt(d.u,1)+' %','lbl','start','fill:'+C.mint)}</g></g>`});
+chart('c-city',W,H,`<line x1="${L}" x2="${L}" y1="0" y2="${H}" stroke="${C.base}"/><g class="growx anim">${a}</g><g data-s="1" class="fx-0"><g class="growx anim">${b}</g></g>${lab}`)})();
+
+/* ---- 13 crecimiento ---- */
+(()=>{const Y=F.year;if(!Y)return;const bars=(id,key,c,f)=>{const W=520,H=290,L=10,R=10,Tp=26,B=26,mx=Math.max(...Y.map(d=>d[key]))*1.08,bw=(W-L-R)/Y.length,y=lin(0,mx,H-B,Tp);
+let g='<g class="grow anim">'+Y.map((d,i)=>`<rect style="--i:${i*3}" x="${L+bw*i+bw*.2}" y="${y(d[key])}" width="${bw*.6}" height="${y(0)-y(d[key])}" rx="5" fill="${c}" fill-opacity="${.45+i*.12}" data-tip="${d.y}: <b>${f(d[key])}</b>"/>`).join('')+'</g>';
+Y.forEach((d,i)=>g+=T(L+bw*(i+.5),y(d[key])-8,f(d[key]),'lbl','middle')+T(L+bw*(i+.5),H-B+18,d.y,'ax','middle'));chart(id,W,H,g+`<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="${C.base}"/>`)};
+bars('c-yr1','s',C.gray,v=>v);bars('c-yr2','u',C.mint,v=>fmt(v))})();
+
+/* ---- 14 terremoto ---- */
+(()=>{const Q=F.quake;if(!Q)return;const W=600,H=380,L=44,R=8,Tp=14,B=34,y=lin(-25,75,H-B,Tp),bw=(W-L-R)/31,mp=new Map(Q);let g='';
+for(let k=-20;k<=60;k+=20)g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(k)}" y2="${y(k)}"/>`+T(L-8,y(k)+4,sg(k,0)+' %','ax','end');
+g+='<g class="grow anim">';for(let k=0;k<=30;k++){const v=mp.get(k),xx=L+bw*k+bw*.15;if(v==null){g+=`<circle cx="${xx+bw*.35}" cy="${y(0)}" r="2.5" fill="#557" data-tip="Día +${k}: otro tipo de día (festivo/evento)"/>`;continue}
+const pos=v>=0;g+=`<rect style="--i:${k};${pos?'':'transform-origin:50% 0'}" x="${xx}" y="${pos?y(v):y(0)}" width="${bw*.7}" height="${Math.abs(y(v)-y(0))}" rx="2" fill="${pos?C.orange:C.blue}" data-tip="Día +${k}: <b>${sg(v)} %</b> vs. línea base"/>`}g+='</g>';
+g+=`<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="#7d979e"/>`;
+[0,5,10,15,20,25,30].forEach(k=>g+=T(L+bw*(k+.5),H-B+18,k?'+'+k:'día 0','ax','middle'));
+g+=T(L+bw*2.5,y(68)-8,'+68 %','lbl','middle','fill:'+C.orange)+T(L+bw*1.1,y(-13.2)+4,'−13,2 % (día 0)','lbl','start','fill:'+C.blue);
+chart('c-quake',W,H,g)})();
+
+/* ---- barras divergentes (festivos) ---- */
+function divbars(id,rows,lo,hi,W,L,rh){const R=58,H=rows.length*rh+20,x=lin(lo,hi,L,W-R);let g='<g class="growx anim">';
+rows.forEach(([k,v,c],i)=>{const pos=v>=0,y0=10+rh*i+rh*.18;g+=`<rect style="--i:${i};transform-origin:${pos?'0':'100%'} 50%" x="${pos?x(0):x(v)}" y="${y0}" width="${Math.abs(x(v)-x(0))}" height="${rh*.62}" rx="4" fill="${c||(pos?C.orange:C.blue)}" data-tip="<b>${k}</b><br>${sg(v)} % vs. línea base"/>`});g+='</g>';
+rows.forEach(([k,v],i)=>{const y0=10+rh*i+rh*.5+4;g+=T(L-10,y0,k,'lbl','end')+T(v>=0?x(v)+6:x(0)+6,y0,sg(v)+' %','lblm','start','fill:'+(v>=0?C.orange:C.blue))});
+g+=`<line x1="${x(0)}" x2="${x(0)}" y1="4" y2="${H-6}" stroke="#7d979e"/>`;chart(id,W,H,g)}
+if(F.ambito){const a=F.ambito;divbars('c-amb',[['Regional',a.Regional],['Nacional',a.Nacional],['Local',a.Local],['Día normal',F.tipo.Normal,C.gray]],-10,24,500,96,52)}
+if(F.holTop)divbars('c-hol',[...F.holTop,...F.holLow.slice().reverse()].map(([k,v])=>[HN[k]||k,v]),-14,72,600,190,42);
+
+/* ---- 16 Pareto ---- */
+(()=>{const P=F.pareto;if(!P)return;const top=P.slice(0,10),rest=P.slice(10).reduce((s,d)=>s+d[1],0),D=[...top.map(d=>[FN[d[0]]||d[0],d[1],d[0]]),['Otras '+(P.length-10),rest,'resto']];
+const W=1168,H=410,L=46,R=16,Tp=18,B=40,y=lin(0,100,H-B,Tp),bw=(W-L-R)/D.length;let g='',cum=0,pts=[];
+for(let k=0;k<=100;k+=20)g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(k)}" y2="${y(k)}"/>`+T(L-8,y(k)+4,k+' %','ax','end');
+g+='<g class="grow anim">'+D.map((d,i)=>{cum+=d[1];pts.push([L+bw*(i+.84),y(cum),cum]);return `<rect class="${i<6?'ptop':''}" style="--i:${i*2}" x="${L+bw*i+bw*.16}" y="${y(d[1])}" width="${bw*.68}" height="${y(0)-y(d[1])}" rx="4" fill="${C.blue}" fill-opacity=".6" data-tip="<b>${d[0]}</b> (${d[2]})<br>${fmt(d[1],1)} % · acumulado ${fmt(cum,1)} %"/>`}).join('')+'</g>';
+D.forEach((d,i)=>g+=T(L+bw*(i+.5),y(d[1])-7,fmt(d[1],1)+' %','lblm','middle')+T(L+bw*(i+.5),H-B+18,d[0],'axs','middle'));
+g+=`<g data-s="1" class="fx-0"><path class="draw anim" pathLength="1" d="M${pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')}" fill="none" stroke="${C.mint}" stroke-width="2.5"/>${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${C.mint}" stroke="#0d1e29" stroke-width="2"/>`).join('')}${T(pts[5][0]+10,pts[5][1]+18,'acumulado '+fmt(pts[5][2],1)+' %','lbl','start','fill:'+C.mint)}</g>`;
+g+=`<g data-s="2" class="fx-0"><line x1="${L}" x2="${W-R}" y1="${y(80)}" y2="${y(80)}" stroke="${C.orange}" stroke-width="1.6" stroke-dasharray="7 5"/>${T(W-R,y(80)-7,'80 %','lbl','end','fill:'+C.orange)}<line x1="${L+bw*6}" x2="${L+bw*6}" y1="${Tp}" y2="${H-B}" stroke="${C.orange}" stroke-width="1.2" stroke-dasharray="3 4"/></g>`;
+chart('c-par',W,H,g)})();
+
+/* ---- 17 Ishikawa ---- */
+(()=>{const W=720,H=420,sy=213,hx=560;let g=`<path class="draw anim" pathLength="1" d="M24 ${sy}H${hx}" stroke="${C.mint}" stroke-width="3" fill="none"/>`;
+g+=`<rect x="${hx}" y="${sy-62}" width="156" height="124" rx="12" fill="#2a1f12" stroke="${C.orange}" stroke-width="1.6"/>`+T(hx+78,sy-30,'EFECTO','lblm','middle','fill:'+C.orange)+T(hx+78,sy-6,'Festivo local','lbl','middle')+T(hx+78,sy+18,'−3,8 %','big','middle','fill:'+C.orange)+T(hx+78,sy+42,'regional: +19,3 %','lblm','middle');
+const B=[['Medición','¿Línea base correcta?','¿Ciudad del feriado?',1,1],['Calendario','¿Víspera, puente','o traslado?',1,1],['Clientes','¿Viajan fuera','de su ciudad?',1,2],
+['Tienda','¿Horario reducido','o cierre?',0,2],['Producto','¿Qué familias caen?','(ver Pareto)',0,3],['Comercial','¿Promociones','distintas ese día?',0,3]];
+// cada categoría es una tarjeta; la espina sale de la tarjeta hacia el eje, así el texto nunca cruza una línea
+B.forEach(([c,a,b,top,s],k)=>{const bx=16+(k%3)*170,by=top?28:sy+108,ax=bx+80,ay=top?by+70:by,ex=ax+64;
+g+=`<g data-s="${s}" class="fx-0"><path d="M${ax} ${ay}L${ex} ${sy}" stroke="${C.blue}" stroke-width="2"/><circle cx="${ex}" cy="${sy}" r="4" fill="${C.blue}"/><rect x="${bx}" y="${by}" width="160" height="70" rx="10" fill="#0f2537" stroke="${C.blue}"/>${T(bx+12,by+22,c,'lbl','start','fill:'+C.blue)}${T(bx+12,by+42,a,'lblm','start','fill:'+C.ink)}${T(bx+12,by+58,b,'lblm','start','fill:'+C.ink)}</g>`});
+chart('c-fish',W,H,g)})();
+
+/* ---- 19 petróleo ---- */
+(()=>{const O=F.oil;if(!O)return;const W=640,H=450,L=62,R=16,Tp=16,B=44,x=lin(20,115,L,W-R),y=lin(6000,19500,H-B,Tp),YC={2013:'#2b6b73',2014:'#3e9690',2015:'#58bda6',2016:'#7cf4c8',2017:'#cffff0'};let g='';
+for(let v=8000;v<=18000;v+=2000)g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/>`+T(L-8,y(v)+4,fmt(v),'ax','end');
+for(let v=30;v<=110;v+=20)g+=T(x(v),H-B+18,v+' USD','ax','middle');
+g+=T(W-R,H-6,'precio promedio del barril (mensual) →','lblm','end')+T(L,Tp-4,'unidades por tienda-día','lblm');
+const P=O.pts,n=P.length,mx=P.reduce((s,p)=>s+p[1],0)/n,my=P.reduce((s,p)=>s+p[2],0)/n,b=P.reduce((s,p)=>s+(p[1]-mx)*(p[2]-my),0)/P.reduce((s,p)=>s+(p[1]-mx)**2,0),a=my-b*mx;
+g+=`<g data-s="1" class="fx-0"><path class="draw anim" pathLength="1" d="M${x(26)} ${y(a+b*26)}L${x(110)} ${y(a+b*110)}" stroke="${C.orange}" stroke-width="2.2" stroke-dasharray="8 5" fill="none"/>${T(x(100),y(17200),'r = '+fmt(O.r,2),'big','middle','fill:'+C.orange)}</g>`;
+g+='<g class="pop anim">'+P.map(([m,o,s],i)=>{const[yy,mm]=m.split('-');return `<circle class="dot" style="--i:${i};--c:${YC[yy]}" cx="${x(o)}" cy="${y(s)}" r="6.5" stroke="#0d1e29" stroke-width="2" data-tip="<b>${MES[+mm-1]} ${yy}</b><br>petróleo ${fmt(o,1)} USD<br>${fmt(s)} unidades por tienda-día"/>`}).join('')+'</g>';
+g+=`<g data-s="2" class="fx-0">${T(x(100),y(7000),'2013–2014','lbl','middle','fill:#58a8a4')}${T(x(45),y(17900),'2016–2017','lbl','middle','fill:'+C.mint)}`+Object.entries(YC).map(([k,c],i)=>`<circle cx="${W-R-250+i*52}" cy="${Tp+8}" r="5.5" fill="${c}"/>${T(W-R-242+i*52,Tp+12,k,'lblm')}`).join('')+'</g>';
+chart('c-oil',W,H,g)})();
+
+/* ---- 20 promociones ---- */
+(()=>{const P=F.promo;if(!P)return;const W=520,H=150,L=120,R=60,x=lin(0,15,L,W-R),rows=[['Sin promoción',P.sin,C.gray],['Con promoción',P.con,C.orange]];
+let g='<g class="growx anim">'+rows.map(([k,v,c],i)=>`<rect style="--i:${i*3}" x="${L}" y="${18+i*58}" width="${x(v)-L}" height="36" rx="6" fill="${c}" data-tip="${k}: <b>${fmt(v,2)}</b> unidades por línea"/>`).join('')+'</g>';
+rows.forEach(([k,v],i)=>g+=T(L-10,18+i*58+23,k,'lbl','end')+T(x(v)+8,18+i*58+24,fmt(v,2),'big','start','fill:'+(i?C.orange:C.ink)));
+g+=T(x(P.con)+8,140,'+'+fmt((P.con/P.sin-1)*100,1)+' %','lbl','start','fill:'+C.orange);chart('c-promo',W,H,g)})();
+(()=>{const want=['BEVERAGES','GROCERY I','CLEANING','PRODUCE','BREAD/BAKERY','DAIRY','PREPARED FOODS'],R0=F.promoFam;if(!R0)return;const D=want.map(k=>R0.find(r=>r[0]==k)).filter(Boolean);
+const W=520,rh=31,H=D.length*rh+24,L=130,R=50,x=lin(.8,2,L,W-R);let g=`<line x1="${x(1)}" x2="${x(1)}" y1="2" y2="${H-18}" stroke="#7d979e" stroke-dasharray="3 4"/>`+T(x(1),H-4,'1,0','ax','middle')+T(x(2),H-4,'2,0×','ax','middle');
+g+='<g class="growx anim">'+D.map(([k,v],i)=>`<rect style="--i:${i};transform-origin:${v>=1?'0':'100%'} 50%" x="${Math.min(x(1),x(v))}" y="${6+i*rh}" width="${Math.abs(x(v)-x(1))}" height="${rh*.55}" rx="3" fill="${v>=1?C.orange:C.blue}" data-tip="<b>${FN[k]||k}</b><br>${fmt(v,2)}× unidades por línea con promoción"/>`).join('')+'</g>';
+D.forEach(([k,v],i)=>g+=T(L-10,6+i*rh+11,FN[k]||k,'lblm','end','fill:'+C.ink)+T(Math.max(x(1),x(v))+6,6+i*rh+11,fmt(v,2)+'×','lblm'));chart('c-pfam',W,H,g)})();
+(()=>{const Y=F.promoYear;if(!Y)return;const W=200,H=110,bw=W/Y.length,y=lin(0,13,H-20,14);
+let g='<g class="grow anim">'+Y.map(([k,v],i)=>`<rect style="--i:${i*3}" x="${bw*i+bw*.2}" y="${y(v)}" width="${bw*.6}" height="${y(0)-y(v)}" rx="3" fill="${C.mint}" fill-opacity="${.45+i*.18}" data-tip="${k}: <b>${fmt(v,1)} %</b> de líneas en promoción"/>`).join('')+'</g>';
+Y.forEach(([k,v],i)=>g+=T(bw*(i+.5),y(v)-5,fmt(v,1),'lblm','middle')+T(bw*(i+.5),H-4,k,'ax','middle'));chart('c-pyr',W,H,g)})();
+
+/* ---- 22 importancia ---- */
+(()=>{const I=F.imp;if(!I)return;const NM={mean_14_2017:'Media 14 días',mean_30_2017:'Media 30 días',mean_7_2017:'Media 7 días',mean_4_dow4_2017:'Media 4 sem. (mismo día)',mean_60_2017:'Media 60 días',mean_3_2017:'Media 3 días'};
+const D=[...I,['Otros 34 atributos',100-I.reduce((s,d)=>s+d[1],0)]],W=560,rh=37,H=D.length*rh+6,L=190,R=56,x=lin(0,32,L,W-R);
+let g='<g class="growx anim">'+D.map(([k,v],i)=>`<rect style="--i:${i}" x="${L}" y="${4+i*rh}" width="${x(v)-L}" height="${rh*.62}" rx="4" fill="${i<3?C.mint:C.gray}" data-tip="<b>${k}</b><br>${fmt(v,1)} % de la importancia total"/>`).join('')+'</g>';
+D.forEach(([k,v],i)=>g+=T(L-10,4+i*rh+14,NM[k]||k,'lblm','end','fill:'+C.ink)+T(x(v)+6,4+i*rh+14,fmt(v,1)+' %','lblm'));chart('c-imp',W,H,g)})();
+
+/* ================= motor de pasos ================= */
+const slides=$$('.slide'),parts=['','Parte 1 · Derlis Lopez','Parte 2 · Jose Pacheco','Parte 3 · Stalin Tumbaco','Parte 4 · Marcos Zambrano'];let cur=0,step=0;
+slides.forEach(s=>{s.max=Math.max(0,...$$('[data-s],[data-m]',s).map(e=>Math.max(+(e.dataset.s||0),+(e.dataset.m||0))));const p=+s.dataset.part;
+if(p){const w=document.createElement('div');w.className='who';w.innerHTML=`<i>${[1,2,3,4].map(k=>`<u class="${k<=p?'on':''}"></u>`).join('')}</i>${parts[p]}`;s.appendChild(w)}});
+$$('.num').forEach(e=>{e.textContent=fmt(0,+(e.dataset.dec||0))+(e.dataset.suf||'')});
+function count(e){const to=+e.dataset.to,dec=+(e.dataset.dec||0),suf=e.dataset.suf||'',t0=performance.now(),dur=1300;
+(function f(t){const k=Math.min(1,(t-t0)/dur),v=to*(1-Math.pow(1-k,3));e.textContent=fmt(v,dec)+suf;if(k<1&&e.done)requestAnimationFrame(f)})(t0)}
+function render(){const s=slides[cur];slides.forEach((x,i)=>x.classList.toggle('active',i===cur));
+$$('[data-s]',s).forEach(e=>e.classList.toggle('on',+e.dataset.s<=step));$$('[data-m]',s).forEach(e=>e.classList.toggle('m',+e.dataset.m<=step));
+requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.anim,.num',s).forEach(e=>{const vis=!e.closest('[data-s]:not(.on)');
+if(e.classList.contains('num')){if(vis&&!e.done){e.done=1;count(e)}}else e.classList.toggle('go',vis)})));
+$('#counter').textContent=`${String(cur+1).padStart(2,'0')} / ${slides.length}`;$('#progress').style.width=`${(cur+1)/slides.length*100}%`;
+$('#dots').innerHTML=s.max?Array.from({length:s.max+1},(_,i)=>`<i class="${i<=step?'on':''}"></i>`).join(''):'';
+const nt=$('.nt',s);$('#notes').innerHTML=`<h4>Notas · diapositiva ${cur+1} · paso ${step}/${s.max}</h4>`+(nt?nt.innerHTML:'');const li=$$('#notes li'),ni=li.length>s.max?step:Math.max(0,step-1);li.forEach((l,i)=>l.classList.toggle('now',i===ni));
+history.replaceState(null,'','#'+(cur+1))}
+function go(sl,st){if(sl!==cur)$$('.anim,.num',slides[cur]).forEach(e=>{e.classList.remove('go');e.done=0});cur=sl;step=st;render()}
+const next=()=>step<slides[cur].max?go(cur,step+1):cur<slides.length-1&&go(cur+1,0),prev=()=>step>0?go(cur,step-1):cur>0&&go(cur-1,slides[cur-1].max);
+$('#next').onclick=next;$('#prev').onclick=prev;
+document.addEventListener('keydown',e=>{const k=e.key;if(['ArrowRight','PageDown',' ','Enter'].includes(k)){e.preventDefault();next()}else if(['ArrowLeft','PageUp','Backspace'].includes(k)){e.preventDefault();prev()}
+else if(k==='Home')go(0,0);else if(k==='End')go(slides.length-1,0);else if(k.toLowerCase()==='n')$('#notes').classList.toggle('show');else if(k.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.()}});
+let tx0=null;addEventListener('touchstart',e=>tx0=e.touches[0].clientX,{passive:true});addEventListener('touchend',e=>{if(tx0==null)return;const d=e.changedTouches[0].clientX-tx0;if(Math.abs(d)>50)(d<0?next:prev)();tx0=null});
+/* tooltip */
+const tip=$('#tip');function place(e){const r=tip.getBoundingClientRect();tip.style.left=Math.min(e.clientX+14,innerWidth-r.width-8)+'px';tip.style.top=Math.min(e.clientY+14,innerHeight-r.height-8)+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t){tip.innerHTML=t.dataset.tip;tip.style.opacity=1;place(e)}});
+document.addEventListener('mousemove',e=>{if(e.target.closest('[data-tip]'))place(e)});document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.style.opacity=0});
+/* imágenes en línea: si no cargan, se muestra un marcador */
+$$('img.web').forEach(i=>{const f=()=>i.closest('.fig').classList.add('noimg');i.addEventListener('error',f);if(i.complete&&!i.naturalWidth)f()});
+/* escala del lienzo 1280×720 */
+function fit(){document.documentElement.style.setProperty('--k',Math.min(innerWidth/1280,(innerHeight-54)/720))}addEventListener('resize',fit);fit();
+/* partículas */
+const cv=$('#particles'),ctx=cv.getContext('2d'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let pts=[];
+function rs(){const d=Math.min(devicePixelRatio||1,2);cv.width=innerWidth*d;cv.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0);pts=Array.from({length:Math.min(55,Math.floor(innerWidth/26))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.4}))}
+function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(124,244,200,.5)';ctx.fill();
+for(let j=i+1;j<pts.length;j++){const q=pts[j],dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd<110){ctx.strokeStyle=`rgba(103,186,255,${.1*(1-dd/110)})`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}}});if(!reduce)requestAnimationFrame(draw)}
+addEventListener('resize',rs);rs();draw();
+const fromHash=()=>{const h=parseInt(location.hash.slice(1));return h>0&&h<=slides.length?h-1:0};
+addEventListener('hashchange',()=>{const t=fromHash();if(t!==cur)go(t,0)});go(fromHash(),0);
+</script>
 </body>
 </html>
